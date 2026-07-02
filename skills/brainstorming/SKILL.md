@@ -28,7 +28,7 @@ Every project goes through this process. A todo list, a single-function utility,
 
 You MUST create a task for each of these items and complete them in order:
 
-1. **Read the provided context** - the task description, linked tickets, attachments, and any constraints the user stated. Parse intent and boundaries before touching the codebase.
+1. **Read the provided context** - the task description, linked tickets, attachments, and any constraints the user stated. Parse intent and boundaries before touching the codebase
 2. **Explore project context** — check files, docs, recent commits
 3. **Offer the visual companion just-in-time** — NOT upfront. The first time a question would genuinely be clearer shown than described, offer it then (its own message); on approval its browser tab opens for you. If no visual question ever arises, never offer it. See the Visual Companion section below.
 4. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
