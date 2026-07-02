@@ -9,7 +9,7 @@ description: Use when implementation is complete, all tests pass, and you need t
 
 Guide completion of development work by presenting clear options and handling chosen workflow.
 
-**Core principle:** Verify tests → Detect environment → Present options → Execute choice → Clean up.
+**Core principle:** Verify tests → Detect environment → Present options → Execute choice → Archive released specs/plans → Clean up.
 
 **Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
 
@@ -112,6 +112,19 @@ git merge <feature-branch>
 # Only after merge succeeds: cleanup worktree (Step 6), then delete branch
 ```
 
+**Archive the released spec & plan (ADR transition).** The change is now in `<base-branch>`, so its spec and plan are no longer current source of truth. Move them from `active/` to `archive/`, where they become ADRs — a historical record of a past decision, not a description of current domain state:
+
+```bash
+mkdir -p docs/superpowers/specs/archive docs/superpowers/plans/archive
+# Move the spec(s) and plan(s) this branch implemented.
+# If more than one is active, ask the user which to archive before moving.
+git mv docs/superpowers/specs/active/<spec>.md docs/superpowers/specs/archive/
+git mv docs/superpowers/plans/active/<plan>.md docs/superpowers/plans/archive/
+git commit -m "docs: archive spec/plan for <feature> (released → ADR)"
+```
+
+If no spec/plan exists under `active/` (e.g., this branch had none), skip this step silently.
+
 Then: Cleanup worktree (Step 6), then delete branch:
 
 ```bash
@@ -126,6 +139,8 @@ git push -u origin <feature-branch>
 ```
 
 **Do NOT clean up worktree** — user needs it alive to iterate on PR feedback.
+
+**Do NOT archive the spec/plan yet** — the PR is open, not merged. Archiving (`active/` → `archive/`, ADR) belongs once the change actually lands in the base branch. Remind the user to move the spec and plan to `archive/` after the PR merges (or re-run this skill's archive step at that point).
 
 #### Option 3: Keep As-Is
 
@@ -183,12 +198,12 @@ git worktree prune  # Self-healing: clean up any stale registrations
 
 ## Quick Reference
 
-| Option | Merge | Push | Keep Worktree | Cleanup Branch |
-|--------|-------|------|---------------|----------------|
-| 1. Merge locally | yes | - | - | yes |
-| 2. Create PR | - | yes | yes | - |
-| 3. Keep as-is | - | - | yes | - |
-| 4. Discard | - | - | - | yes (force) |
+| Option | Merge | Push | Keep Worktree | Cleanup Branch | Archive spec/plan |
+|--------|-------|------|---------------|----------------|-------------------|
+| 1. Merge locally | yes | - | - | yes | yes (active→archive, ADR) |
+| 2. Create PR | - | yes | yes | - | after PR merges |
+| 3. Keep as-is | - | - | yes | - | - |
+| 4. Discard | - | - | - | yes (force) | - |
 
 ## Common Mistakes
 

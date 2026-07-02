@@ -30,7 +30,7 @@ You MUST create a task for each of these items and complete them in order:
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
 6. **Template fit check** — if a project-level `docs/superpowers/spec-template.md` exists, map the approved design onto it; surface every mismatch in one message and ask before deviating. Skip if absent. See Custom Spec Template.
-7. **Write design doc** — save to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
+7. **Write design doc** — save to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` and commit
 8. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 9. **User reviews written spec** — ask user to review the spec file before proceeding
 10. **Transition to implementation** — invoke writing-plans skill to create implementation plan
@@ -114,7 +114,8 @@ digraph brainstorming {
 
 **Documentation:**
 
-- Write the validated design (spec) to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`.
+- Write the validated design (spec) to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md`.
+  - `active/` holds specs for changes currently being implemented — they are the current source of truth. When the change is released (merged into its base branch), the spec and its plan move to `specs/archive/` and `plans/archive/`, becoming ADRs: a historical record of past decisions, no longer a description of current domain state. That move happens in `superpowers:finishing-a-development-branch`, not here.
   - (User preferences for spec location override this default).
 - If a project-level `docs/superpowers/spec-template.md` is present, conform by default and surface any mismatches before writing rather than silently extending the template — see Custom Spec Template for the fit-check protocol.
 - Use elements-of-style:writing-clearly-and-concisely skill if available.

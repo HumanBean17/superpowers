@@ -22,7 +22,8 @@ These principles override the rest of this skill when in conflict.
 
 **Context:** If working in an isolated worktree, it should have been created via the `superpowers:using-git-worktrees` skill at execution time.
 
-**Save plans to:** `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
+**Save plans to:** `docs/superpowers/plans/active/YYYY-MM-DD-<feature-name>.md`
+- `active/` holds plans for changes currently being implemented — current source of truth. On release (merge into the base branch), the plan moves to `plans/archive/` alongside its spec and becomes an ADR (past decision, not current domain state). The move is handled by `superpowers:finishing-a-development-branch`.
 - (User preferences for plan location override this default)
 
 ## Scope Check
@@ -175,7 +176,7 @@ If you find issues, fix them inline. No need to re-review — just fix and move 
 
 After saving the plan, offer execution choice:
 
-**"Plan complete and saved to `docs/superpowers/plans/<filename>.md`. Two execution options:**
+**"Plan complete and saved to `docs/superpowers/plans/active/<filename>.md`. Two execution options:**
 
 **1. Subagent-Driven (recommended)** - I dispatch a fresh subagent per task, review between tasks, fast iteration
 
