@@ -2,7 +2,7 @@
 
 Use this template when dispatching a plan document reviewer subagent.
 
-**Purpose:** Verify the plan is complete, matches the spec, and has proper task decomposition.
+**Purpose:** Verify the plan is complete, matches the spec, decomposes well, and carries design — not code.
 
 **Dispatch after:** The complete plan is written.
 
@@ -19,10 +19,12 @@ Subagent (general-purpose):
 
     | Category | What to Look For |
     |----------|------------------|
-    | Completeness | TODOs, placeholders, incomplete tasks, missing steps |
+    | No Code | Plans carry DESIGN, not code. Flag ANY implementation logic — method bodies, algorithms, test code, or copy-paste-ready code blocks. Signatures, types, data shapes, config values, and behavioral test design (what each test verifies + expected result) are fine and expected. |
+    | Self-Contained | Each task carries the full contracts a zero-context implementer needs. Flag tasks that push the reader to the spec or say "see earlier." |
+    | Completeness | TODOs, placeholders, vague steps, missing test scenarios or expected results |
     | Spec Alignment | Plan covers spec requirements, no major scope creep |
     | Task Decomposition | Tasks have clear boundaries, steps are actionable |
-    | Buildability | Could an engineer follow this plan without getting stuck? |
+    | Buildability | Could an engineer write the code from this plan's design without getting stuck? |
 
     ## Calibration
 
@@ -31,7 +33,8 @@ Subagent (general-purpose):
     Minor wording, stylistic preferences, and "nice to have" suggestions are not.
 
     Approve unless there are serious gaps — missing requirements from the spec,
-    contradictory steps, placeholder content, or tasks so vague they can't be acted on.
+    contradictory steps, placeholder content, embedded code, or tasks/contracts
+    so vague they can't be acted on.
 
     ## Output Format
 

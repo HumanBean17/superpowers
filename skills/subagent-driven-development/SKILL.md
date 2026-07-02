@@ -120,9 +120,10 @@ most expensive — which silently defeats this section.
 many turns a subagent takes, and the cheapest models routinely take 2-3× the
 turns on multi-step work — costing more overall. Use a mid-tier model as the
 floor for reviewers and for implementers working from prose descriptions.
-When the task's plan text contains the complete code to write, the
-implementation is transcription plus testing: use the cheapest tier for
-that implementer. Single-file mechanical fixes also take the cheapest tier.
+Plans carry design, not code, so implementers always write code from a
+behavioral description plus contracts — treat every implementation task as
+"working from prose descriptions" (mid-tier floor above). Single-file
+mechanical fixes with a complete spec also take the cheapest tier.
 
 **Task complexity signals (implementation tasks):**
 - Touches 1-2 files with a complete spec → cheap model
