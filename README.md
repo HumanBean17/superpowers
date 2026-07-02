@@ -6,11 +6,13 @@ Superpowers is a complete software development methodology for your coding agent
 
 This fork makes several intentional modifications to the original superpowers framework ideology and workflow:
 
-### Brainstorming is Now Optional
+### Brainstorming Runs Proactively; Specs Are Opt-In
 
-The most significant change is that the **brainstorming skill is no longer mandatory**. In the original framework, brainstorming was automatically triggered for any creative work. In this fork, brainstorming only activates when **you explicitly request it** — for example, when you say "let's brainstorm," "help me design this," or "spec this out."
+The **brainstorming skill is proactively executed for any creative work**, including small tasks — it explores intent, proposes approaches, and presents a design for approval before any code is written. This matches the original framework's mandatory trigger.
 
-**Rationale:** Not every task requires a formal design process. Simple implementations, straightforward bug fixes, and well-defined tasks can proceed directly to planning and implementation without the brainstorming overhead.
+The change from the original is narrower: **writing a spec document is now optional.** Once the design is approved, the agent asks whether to formalize it into a spec. Decline it and you go straight to implementation; accept it and the usual spec → plan → implementation flow follows.
+
+**Rationale:** The brainstorming conversation catches unexamined assumptions early, even on simple tasks — so it stays proactive. But not every task needs a committed spec file, so spec generation is opt-in rather than forced.
 
 ### Custom Spec Templates
 

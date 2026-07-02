@@ -1,16 +1,16 @@
 ---
 name: brainstorming
-description: "Use when the user explicitly asks to brainstorm, design, or spec out an idea before implementation - explores intent, requirements, alternatives, and architecture through collaborative dialogue to produce a design doc. Not invoked automatically for routine tasks; only when the user wants design discussion."
+description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements, and design through collaborative dialogue, then asks whether to write a spec."
 ---
 
 # Brainstorming Ideas Into Designs
 
-Help turn ideas into fully formed specs through natural collaborative dialogue.
+Help turn ideas into fully formed designs and specs through natural collaborative dialogue.
 
 Start by reading the context the user gave you, then study the codebase, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval.
 
 <HARD-GATE>
-Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it.
+Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY project regardless of perceived simplicity.
 </HARD-GATE>
 
 ## Core Principles
@@ -19,6 +19,10 @@ These principles override the rest of this skill when in conflict.
 
 1. **Context before code.** Before exploring the codebase, carefully read the context the user provided - the task description, linked tickets, attached files, references, and any constraints stated in the message. Only then explore the code. The design must reflect what the user actually asked for, not what you assume.
 2. **Specs carry design, not code.** The spec describes WHAT to build and WHY, with references to classes, methods, fields, configurations, tables, DTOs, and contracts (JSON Schema, schemas, config). It MUST NOT contain implementation logic - method bodies, algorithms, or actual code. Writing code is the job of the agent that implements the plan. Your job here is to design.
+
+## Anti-Pattern: "This Is Too Simple To Need A Design"
+
+Every project goes through this process — a todo list, a single-function utility, a config change, all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval. What's optional is the written spec (see below) — the design conversation itself never is.
 
 ## Checklist
 
@@ -29,11 +33,14 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Template fit check** — if a project-level `docs/superpowers/spec-template.md` exists, map the approved design onto it; surface every mismatch in one message and ask before deviating. Skip if absent. See Custom Spec Template.
-7. **Write design doc** — save to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` and commit
-8. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
-9. **User reviews written spec** — ask user to review the spec file before proceeding
-10. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+6. **Ask whether to write a spec** — once the design is approved, ask the user. The design conversation is mandatory; the spec document is not. For trivial changes the approved design alone may be enough; for anything non-trivial, default to writing one.
+   - **No spec** → the approved design is the shared understanding — go straight to implementation (no spec doc, no plan).
+   - **Yes spec** → continue to steps 7-11.
+7. **Template fit check** — if a project-level `docs/superpowers/spec-template.md` exists, map the approved design onto it; surface every mismatch in one message and ask before deviating. Skip if absent. See Custom Spec Template.
+8. **Write design doc** — save to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` and commit
+9. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
+10. **User reviews written spec** — ask user to review the spec file before proceeding
+11. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
 ## Process Flow
 
@@ -45,11 +52,13 @@ digraph brainstorming {
     "Propose 2-3 approaches" [shape=box];
     "Present design sections" [shape=box];
     "User approves design?" [shape=diamond];
+    "Write a spec?" [shape=diamond];
     "Template fit check" [shape=box];
     "Write design doc" [shape=box];
     "Spec self-review\n(fix inline)" [shape=box];
     "User reviews spec?" [shape=diamond];
     "Invoke writing-plans skill" [shape=doublecircle];
+    "Proceed to implementation" [shape=doublecircle];
 
     "Read provided context" -> "Explore project context";
     "Explore project context" -> "Ask clarifying questions";
@@ -57,7 +66,9 @@ digraph brainstorming {
     "Propose 2-3 approaches" -> "Present design sections";
     "Present design sections" -> "User approves design?";
     "User approves design?" -> "Present design sections" [label="no, revise"];
-    "User approves design?" -> "Template fit check" [label="yes"];
+    "User approves design?" -> "Write a spec?" [label="yes"];
+    "Write a spec?" -> "Proceed to implementation" [label="no"];
+    "Write a spec?" -> "Template fit check" [label="yes"];
     "Template fit check" -> "Write design doc";
     "Write design doc" -> "Spec self-review\n(fix inline)";
     "Spec self-review\n(fix inline)" -> "User reviews spec?";
@@ -66,7 +77,7 @@ digraph brainstorming {
 }
 ```
 
-**The terminal state is invoking writing-plans.** Do NOT invoke any implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.
+**Terminal state.** If the user opted into a spec, the terminal state is invoking writing-plans. If they declined, go straight to implementation — the approved design is enough. In either case, code is only written after the design is approved.
 
 ## The Process
 
@@ -111,6 +122,14 @@ digraph brainstorming {
 - Don't propose unrelated refactoring. Stay focused on what serves the current goal.
 
 ## After the Design
+
+Once the user approves the design, **ask whether to write a spec.** The design conversation is mandatory; the spec document is not. The steps below split on that answer.
+
+### If the user declines a spec
+
+The approved design is the shared understanding — go straight to implementation. Do not write a spec doc or a formal plan; the conversation and approval are enough. Commit nothing extra unless the user asks.
+
+### If the user wants a spec
 
 **Documentation:**
 
@@ -164,4 +183,5 @@ Specs are freeform unless the project provides `docs/superpowers/spec-template.m
 - **Incremental validation** - Present design, get approval before moving on.
 - **Be flexible** - Go back and clarify when something doesn't make sense.
 - **Specs carry design, not code** - References and contracts yes, implementation logic no.
+- **Design is mandatory, the spec is not** - Always present a design and get approval, then ask whether to formalize it into a spec doc.
 - **If template is present, follow it** - And surface template gaps rather than working around them.
