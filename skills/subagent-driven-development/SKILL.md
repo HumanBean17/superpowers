@@ -278,17 +278,17 @@ You: I'm using Subagent-Driven Development to execute this plan.
 [Read plan file once: docs/superpowers/plans/active/feature-plan.md]
 [Create todos for all tasks]
 
-Task 1: Hook installation script
+Task 1: Backup command
 
 [Run task-brief for Task 1; dispatch implementer with brief + report paths + context]
 
-Implementer: "Before I begin - should the hook be installed at user or system level?"
+Implementer: "Before I begin - should backups be stored locally or remotely?"
 
-You: "User level (~/.config/superpowers/hooks/)"
+You: "Locally (~/.config/superpowers/backups/)"
 
 Implementer: "Got it. Implementing now..."
 [Later] Implementer:
-  - Implemented install-hook command
+  - Implemented backup command
   - Added tests, 5/5 passing
   - Self-review: Found I missed --force flag, added it
   - Committed
