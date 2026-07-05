@@ -33,8 +33,8 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Ask whether to write a spec** — once the design is approved, ask the user. The design conversation is mandatory; the spec document is not. For trivial changes the approved design alone may be enough; for anything non-trivial, default to writing one.
-   - **No spec** → the approved design is the shared understanding — go straight to implementation (no spec doc, no plan).
+6. **Ask whether to write a spec** — once the design is approved, mark all previous tasks (1-5) as completed, then ask the user. The design conversation is mandatory; the spec document is not. For trivial changes the approved design alone may be enough; for anything non-trivial, default to writing one.
+   - **No spec** → mark all brainstorming tasks complete, then proceed to implementation (no spec doc, no plan).
    - **Yes spec** → continue to steps 7-11.
 7. **Template fit check** — if a project-level `docs/superpowers/spec-template.md` exists, map the approved design onto it; surface every mismatch in one message and ask before deviating. Skip if absent. See Custom Spec Template.
 8. **Write design doc** — save to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` and commit
@@ -126,6 +126,8 @@ digraph brainstorming {
 Once the user approves the design, **ask whether to write a spec.** The design conversation is mandatory; the spec document is not. The steps below split on that answer.
 
 ### If the user declines a spec
+
+**Task cleanup:** Mark all brainstorming tasks as completed before proceeding. This includes "Read provided context", "Explore project context", "Ask clarifying questions", "Propose 2-3 approaches", and "Present design" - even if clarification was iterative throughout the design process.
 
 The approved design is the shared understanding — go straight to implementation. Do not write a spec doc or a formal plan; the conversation and approval are enough. Commit nothing extra unless the user asks.
 
