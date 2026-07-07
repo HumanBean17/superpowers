@@ -5,7 +5,7 @@ description: Use when completing tasks, implementing major features, or before m
 
 # Requesting Code Review
 
-Dispatch a code reviewer subagent to catch issues before they cascade. The reviewer gets precisely crafted context for evaluation — never your session's history. This keeps the reviewer focused on the work product, not your thought process, and preserves your own context for continued work.
+Fan out a **team** of code reviewer subagents — one per review scope — and run them in parallel. Each reviewer gets precisely crafted context for its scope, never your session's history. Splitting the review across focused reviewers catches more than a single pass, and isolating their context preserves your own for continued work.
 
 **Core principle:** Review early, review often.
 
@@ -29,41 +29,54 @@ BASE_SHA=$(git rev-parse HEAD~1)  # or origin/main
 HEAD_SHA=$(git rev-parse HEAD)
 ```
 
-**2. Dispatch code reviewer subagent:**
+**2. Decide the scopes:**
 
-Dispatch a `general-purpose` subagent, filling the template at [code-reviewer.md](code-reviewer.md)
+Look at the diff and decompose it into review scopes. **You choose the breakdown** — by subsystem, by concern, by file cluster, whatever fits this change. There is no fixed set of scopes; pick what this diff actually needs (one or several). The goal is a focused, non-overlapping slice per reviewer.
 
-**Placeholders:**
+**3. Fan out the review team:**
+
+Dispatch one `general-purpose` reviewer per scope, **all in one response** so they run in parallel. Each fills the per-reviewer template at [code-reviewer.md](code-reviewer.md).
+
+**Shared placeholders:**
 - `{DESCRIPTION}` - Brief summary of what you built
 - `{PLAN_OR_REQUIREMENTS}` - What it should do
 - `{BASE_SHA}` - Starting commit
 - `{HEAD_SHA}` - Ending commit
 
-**3. Act on feedback:**
+**Per-reviewer placeholder:**
+- `{SCOPE}` - The slice of the diff this reviewer owns (you decide)
+
+**4. Merge findings:**
+
+Collect every reviewer's output, dedupe overlapping issues, and rank by severity. The merged result is your review.
+
+**5. Act on feedback:**
 - Fix Critical issues immediately
 - Fix Important issues before proceeding
 - Note Minor issues for later
-- Push back if reviewer is wrong (with reasoning)
+- Push back if reviewers are wrong (with reasoning)
 
 ## Example
 
 ```
-[Just completed Task 2: Add verification function]
+[Just completed Task 2: Add verification function — diff spans index logic, CLI, and tests]
 
 You: Let me request code review before proceeding.
 
 BASE_SHA=$(git log --oneline | grep "Task 1" | head -1 | awk '{print $1}')
 HEAD_SHA=$(git rev-parse HEAD)
 
-[Dispatch code reviewer subagent]
-  DESCRIPTION: Added verifyIndex() and repairIndex() with 4 issue types
-  PLAN_OR_REQUIREMENTS: Task 2 from docs/superpowers/plans/active/deployment-plan.md
-  BASE_SHA: a7981ec
-  HEAD_SHA: 3df7661
+[Decide scopes from the diff: index logic, CLI, tests]
+[Dispatch one reviewer per scope, all in one response]
+  Reviewer A — SCOPE: index/repair logic and data integrity
+  Reviewer B — SCOPE: CLI flag handling and user-facing behavior
+  Reviewer C — SCOPE: test coverage and assertion quality
+  (shared) DESCRIPTION: Added verifyIndex() and repairIndex()
+  (shared) BASE_SHA: a7981ec  HEAD_SHA: 3df7661
 
-[Subagent returns]:
+[Team returns in parallel, you merge]:
   Strengths: Clean architecture, real tests
-  Issues:
+  Issues (deduped, ranked):
     Important: Missing progress indicators
     Minor: Magic number (100) for reporting interval
   Assessment: Ready to proceed

@@ -38,6 +38,12 @@ The brainstorming skill now more strongly enforces the principle that **design s
 
 **Rationale:** This separation keeps specs focused on design and prevents implementation details from creeping into the design phase.
 
+### Code Review Fans Out a Team
+
+The **requesting-code-review** skill dispatches a **team of reviewer subagents in parallel** — one per review scope — instead of a single reviewer. The agent inspects the diff and decides the scope breakdown (by subsystem, concern, or file cluster); there is no fixed set of roles. Findings from all reviewers are merged and deduped before you act on them.
+
+**Rationale:** Several focused reviewers each holding a small slice cover more ground than one reviewer juggling the entire diff, and each reviewer's isolated context stays small.
+
 ## The Basic Workflow
 
 1. **brainstorming** - Activates before writing code. Refines rough ideas through questions, explores alternatives, presents design in sections for validation. Saves design document.
@@ -50,7 +56,7 @@ The brainstorming skill now more strongly enforces the principle that **design s
 
 5. **test-driven-development** - Activates during implementation. Enforces RED-GREEN-REFACTOR: write failing test, watch it fail, write minimal code, watch it pass, commit. Deletes code written before tests.
 
-6. **requesting-code-review** - Activates between tasks. Reviews against plan, reports issues by severity. Critical issues block progress.
+6. **requesting-code-review** - Activates between tasks. Fans out a team of reviewers (one per scope, in parallel), merges findings, reports issues by severity. Critical issues block progress.
 
 7. **finishing-a-development-branch** - Activates when tasks complete. Verifies tests, presents options (merge/PR/keep/discard), cleans up worktree.
 
@@ -72,7 +78,7 @@ The brainstorming skill now more strongly enforces the principle that **design s
 - **writing-plans** - Detailed implementation plans
 - **executing-plans** - Batch execution with checkpoints
 - **dispatching-parallel-agents** - Concurrent subagent workflows
-- **requesting-code-review** - Pre-review checklist
+- **requesting-code-review** - Fan-out review team (one reviewer per scope)
 - **receiving-code-review** - Responding to feedback
 - **using-git-worktrees** - Parallel development branches
 - **finishing-a-development-branch** - Merge/PR decision workflow
