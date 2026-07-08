@@ -14,6 +14,12 @@ The change from the original is narrower: **writing a spec document is now optio
 
 **Rationale:** The brainstorming conversation catches unexamined assumptions early, even on simple tasks — so it stays proactive. But not every task needs a committed spec file, so spec generation is opt-in rather than forced.
 
+### Spec-Brainstorming: Two-Round Spec Lifecycle
+
+A new **spec-brainstorming** skill adds a two-round spec lifecycle for teams with a system analyst and a developer. Round 1 (analyst, build) turns an idea into a `Status: draft` spec and stops — no plan, no code. Round 2 (developer, review) walks the draft top-down, refines it, resolves or accepts its Open Questions, and either leaves it as `draft` or approves it to `Status: in_progress` and hands off to `writing-plans`. Both rounds share one design-thinking core and a structured **Open Questions** section; detailization depth is never role-gated.
+
+**Rationale:** The original `brainstorming` skill stays proactive for general creative work; `spec-brainstorming` is opt-in, invoked only when a spec build/review round is explicitly requested.
+
 ### Custom Spec Templates
 
 Support for **project-level custom spec templates** has been added. If you create a `docs/superpowers/spec-template.md` file in your project, the brainstorming skill will use it as a template for writing design specs. Templates use a `[required]` suffix to mark mandatory sections.
@@ -75,6 +81,7 @@ The **requesting-code-review** skill dispatches a **team of reviewer subagents i
 
 **Collaboration** 
 - **brainstorming** - Socratic design refinement
+- **spec-brainstorming** - Two-round spec lifecycle (analyst build → developer review); opt-in
 - **writing-plans** - Detailed implementation plans
 - **executing-plans** - Batch execution with checkpoints
 - **dispatching-parallel-agents** - Concurrent subagent workflows
