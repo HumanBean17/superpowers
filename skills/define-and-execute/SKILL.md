@@ -1,6 +1,6 @@
 ---
 name: define-and-execute
-description: Use for fully-specified tasks with no creative/design work — the goal and testable success criteria are stated up front. Acts as an orchestrator — runs a Validate gate (stops and asks if the goal or criteria are incomplete, or any decision the work needs is unstated), executes via subagent-driven-development, and returns an evidence report proving each success criterion with concrete outputs. Stops and asks — never fabricates — on an unclear goal, an untestable criterion, an unstated decision, a blocker, or intent divergence. Use brainstorming when design is still open; use autonomous-executor when you would rather it decide-and-note through ambiguity.
+description: Use for fully-specified tasks — goal and testable success criteria stated up front, no design work. Executes via subagents, returns an evidence report, and stops to ask on anything unstated.
 ---
 
 # Define-and-Execute
