@@ -50,6 +50,12 @@ The **requesting-code-review** skill dispatches a **team of reviewer subagents i
 
 **Rationale:** Several focused reviewers each holding a small slice cover more ground than one reviewer juggling the entire diff, and each reviewer's isolated context stays small.
 
+### Define-and-Execute: Fast Path for Fully-Specified Tasks
+
+A new **define-and-execute** skill handles tasks that need no creative work — the goal and testable success criteria are stated up front. The agent acts as an orchestrator: it runs a Validate gate (restates the goal, scores each criterion against a testability rubric, enumerates every unstated decision and stops to batch-ask if anything is missing), executes via **subagent-driven-development** (skipping brainstorming and writing-plans), and returns an **evidence report** that proves each criterion with concrete pasted outputs (requests, responses, database rows, logs) — not "tests pass". It stops and asks — never fabricates — on an unclear goal, an untestable criterion, an unstated decision, a blocker, or intent divergence.
+
+**Rationale:** The full brainstorming → writing-plans → executing flow is right when design is open, but some tasks are already fully specified and only need rigorous execution plus proof. `autonomous-executor` covers the "step away and deliver, decide-and-note" case; `define-and-execute` covers the "fully specified, but stop and ask on anything unstated" case. The two coexist as different ambiguity postures.
+
 ## The Basic Workflow
 
 1. **brainstorming** - Activates before writing code. Refines rough ideas through questions, explores alternatives, presents design in sections for validation. Saves design document.
@@ -68,6 +74,8 @@ The **requesting-code-review** skill dispatches a **team of reviewer subagents i
 
 **The agent checks for relevant skills before any task.** Mandatory workflows, not suggestions.
 
+**Alternative entry point — define-and-execute:** For fully-specified tasks (goal + testable success criteria, no design work), skip steps 1 and 3 (brainstorming and writing-plans) and use **define-and-execute**. It validates the criteria, executes via subagent-driven-development, and returns an evidence report proving each criterion. It stops and asks rather than improvising; it never decides-and-notes an unstated decision (that is `autonomous-executor`'s job).
+
 ## What's Inside
 
 ### Skills Library
@@ -82,6 +90,7 @@ The **requesting-code-review** skill dispatches a **team of reviewer subagents i
 **Collaboration** 
 - **brainstorming** - Socratic design refinement
 - **spec-brainstorming** - Two-round spec lifecycle (analyst build → developer review); opt-in
+- **define-and-execute** - Fast path for fully-specified tasks: validate goal+criteria, execute via subagents, return an evidence report; stops and asks on anything unstated
 - **writing-plans** - Detailed implementation plans
 - **executing-plans** - Batch execution with checkpoints
 - **dispatching-parallel-agents** - Concurrent subagent workflows
