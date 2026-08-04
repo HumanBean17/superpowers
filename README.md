@@ -111,14 +111,3 @@ A new **define-and-execute** skill handles tasks that need no creative work — 
 - **Evidence over claims** - Verify before declaring success
 
 Read [the original release announcement](https://blog.fsck.com/2025/10/09/superpowers/).
-
-## Contributing
-
-The general contribution process for Superpowers is below. Keep in mind that we don't generally accept contributions of new skills and that any updates to skills must work across all of the coding agents we support.
-
-1. Fork the repository
-2. Switch to the 'dev' branch
-3. Create a branch for your work
-4. Submit a PR, being sure to fill in the pull request template.
-
-Skill-behavior tests use the drill eval harness from [superpowers-evals](https://github.com/prime-radiant-inc/superpowers-evals/), cloned into `evals/` — see `evals/README.md` for setup. Plugin-infrastructure tests live at `tests/` and run via the relevant `run-*.sh` or `npm test`.
