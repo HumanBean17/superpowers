@@ -115,7 +115,7 @@ git branch -d <feature-branch>
 ```bash
 mkdir -p docs/superpowers/specs/archive docs/superpowers/plans/archive
 # Move the spec(s) and plan(s) this branch implemented.
-# If more than one is active, ask the user which to archive before moving.
+# If more than one is active, ask your human partner which to archive before moving.
 git mv docs/superpowers/specs/active/<spec>.md docs/superpowers/specs/archive/
 git mv docs/superpowers/plans/active/<plan>.md docs/superpowers/plans/archive/
 git commit -m "docs: archive spec/plan for <feature> (released → ADR)"
@@ -138,7 +138,7 @@ present, and report the URL to your human partner.
 
 Keep the worktree — your human partner iterates on PR feedback there.
 
-**Do NOT archive the spec/plan yet** — the PR is open, not merged. Archiving (`active/` → `archive/`, ADR) belongs once the change actually lands in the base branch. Remind the user to move the spec and plan to `archive/` after the PR merges (or re-run this skill's archive step at that point).
+**Do NOT archive the spec/plan yet** — the PR is open, not merged. Archiving (`active/` → `archive/`, ADR) belongs once the change actually lands in the base branch. Remind your human partner to move the spec and plan to `archive/` after the PR merges (or re-run this skill's archive step at that point).
 
 ### Option 3: Keep As-Is
 

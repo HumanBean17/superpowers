@@ -64,7 +64,7 @@ The sync is **selective**, not a full merge — most of the 62 upstream commits 
 
 - **Clean wins (no conflict):** upstream's `writing-good-tests.md` reference (replaces `testing-anti-patterns.md`); the validated skills "compression sweep" (drop recap/social-proof/persuasion prose) on the skills this fork never modified; `find-polluter.sh` `./`-prefix fix.
 - **SDD execution engine:** the v6.2.0 plan-scoped workspace + resume-based fix loop adopted into `subagent-driven-development` — the engine `define-and-execute` already delegates to. Complements (does not overlap) this fork's spec-brainstorming / define-and-execute layer.
-- **Validated cuts ported into the rewritten skills:** `finishing-a-development-branch` (worktree-path bug fix, discard-as-explicit-request, rationalization table), `writing-plans` (dropped "Remember" recap), `requesting-code-review` (rationalization table), `brainstorming` (folded "Key Principles" recap into points of use).
+- **Validated cuts ported into the rewritten skills:** `finishing-a-development-branch` (worktree-path bug fix, discard-as-explicit-request, rationalization table), `writing-plans` (dropped "Remember" recap), `requesting-code-review` (rationalization table), `brainstorming` and `spec-brainstorming` (folded "Key Principles" recap into points of use — `spec-brainstorming` is a brainstorming clone and got the same treatment for consistency).
 
 **Deliberately skipped:** all Codex portal packaging and the v6.1.1 Codex release; the re-added Gemini CLI support; Windows/hook work — none of which this fork carries. The fork's no-Gemini platform footprint is preserved (the re-added "Gemini CLI" mention was stripped from `executing-plans`).
 
