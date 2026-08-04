@@ -85,20 +85,12 @@ You: [Fix progress indicators]
 [Continue to Task 3]
 ```
 
-## Integration with Workflows
+## Common Rationalizations
 
-**Subagent-Driven Development:**
-- Review after EACH task
-- Catch issues before they compound
-- Fix before moving to next task
-
-**Executing Plans:**
-- Review after each task or at natural checkpoints
-- Get feedback, apply, continue
-
-**Ad-Hoc Development:**
-- Review before merge
-- Review when stuck
+| Excuse | Reality |
+|--------|---------|
+| "I'll just review the diff myself instead of fanning out reviewers" | You're the coordinator — reviewing the diff inline burns the context window you need to keep driving the work. Fan out the reviewer team: each scope's diff and evaluation live in that reviewer's context, and only the merged findings come back to you. |
+| "The reviewers need my whole session history to understand the change" | Hand each reviewer precisely crafted context for its scope, never your session's history. That keeps every reviewer on the work product, not your thought process. |
 
 ## Red Flags
 
