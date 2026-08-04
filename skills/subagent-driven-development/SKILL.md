@@ -158,7 +158,7 @@ conflicts that only emerge from implementation.
 
 Use the least powerful model that can handle each role to conserve cost and increase speed.
 
-**Mechanical implementation tasks** (isolated functions, clear specs, 1-2 files): use a fast, cheap model. Most implementation tasks are mechanical when the plan is well-specified.
+**Mechanical implementation tasks** (isolated functions, clear specs, 1-2 files): a mid-tier model — see the mid-tier floor below; plans carry design, not code, so even small tasks are written from a behavioral description, not transcribed. Only single-file mechanical fixes drop to the cheapest tier.
 
 **Integration and judgment tasks** (multi-file coordination, pattern matching, debugging): use a standard model.
 
@@ -188,7 +188,7 @@ behavioral description plus contracts — treat every implementation task as
 mechanical fixes with a complete spec also take the cheapest tier.
 
 **Task complexity signals (implementation tasks):**
-- Touches 1-2 files with a complete spec → cheap model
+- Touches 1-2 files with a complete spec → mid-tier model (cheapest tier only for single-file mechanical fixes)
 - Touches multiple files with integration concerns → standard model
 - Requires design judgment or broad codebase understanding → most capable model
 
