@@ -19,6 +19,7 @@ These principles override the rest of this skill when in conflict.
 
 1. **Context before code.** Before exploring the codebase, carefully read the context the user provided - the task description, linked tickets, attached files, references, and any constraints stated in the message. Only then explore the code. The design must reflect what the user actually asked for, not what you assume.
 2. **Specs carry design, not code.** The spec describes WHAT to build and WHY, with references to classes, methods, fields, configurations, tables, DTOs, and contracts (JSON Schema, schemas, config). It MUST NOT contain implementation logic - method bodies, algorithms, or actual code. Writing code is the job of the agent that implements the plan. Your job here is to design.
+3. **Calibrate to a human-reviewable altitude.** The spec is the human's review surface; the plan is the agent-facing artifact that carries per-task detail — exact signatures, field-level data shapes, validation rules, test scenarios. Keep the spec at design altitude: the components, the contracts between them, and the decisions they hinge on. If a section carries detail a human would skim rather than review, push it down into the plan, not into the spec — and never into code (Principle #2). But keep it concrete enough that a plan agent could expand the spec into tasks: the named components, contracts, and key decisions must be present.
 
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
 
@@ -149,10 +150,11 @@ After writing the spec, look at it with fresh eyes:
 
 1. **Template conformance (if `docs/superpowers/spec-template.md` is present):** Does it follow the template? Are required sections present, optional ones either dropped or filled?
 2. **Code leakage:** Did implementation logic (method bodies, algorithms) sneak in? Remove it - keep only design, contracts and references. 
-3. **Placeholder scan:** Any "TBD", "TODO", incomplete sections, or vague requirements? Fix them.
-4. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions?
-5. **Scope check:** Is this focused enough for a single implementation plan, or does it need decomposition?
-6. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
+3. **Altitude check:** Any per-task detail a human would skim rather than review — exact signatures, field-level data shapes, validation rules, test scenarios? That belongs in the plan (agent-facing), not the spec: move it out. Then confirm the spec still names the components, contracts, and key decisions a plan agent needs to expand it into tasks — abstract, not vague.
+4. **Placeholder scan:** Any "TBD", "TODO", incomplete sections, or vague requirements? Fix them.
+5. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions?
+6. **Scope check:** Is this focused enough for a single implementation plan, or does it need decomposition?
+7. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
 
 Fix any issues inline. No need to re-review — just fix and move on.
 
