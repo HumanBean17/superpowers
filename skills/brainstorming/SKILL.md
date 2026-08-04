@@ -95,6 +95,7 @@ digraph brainstorming {
 **Exploring approaches:**
 
 - Propose 2-3 different approaches with trade-offs.
+- YAGNI ruthlessly - remove unnecessary features from every approach and design.
 - Present options conversationally with your recommendation and reasoning.
 - Lead with your recommended option and explain why.
 
@@ -175,15 +176,3 @@ Specs are freeform unless the project provides `docs/superpowers/spec-template.m
 
 **Fit check.** Map the approved design onto the template. Drop non-required sections silently. For any `[required]` section that doesn't fit, any section the task needs but the template lacks, or any conflict — present all mismatches in one batched message and ask before deviating.
 
-## Key Principles
-
-- **Context before code** - Read what user gave you before exploring the codebase.
-- **One question at a time** - Don't overwhelm with multiple questions.
-- **Multiple choice preferred** - Easier to answer than open-ended when possible.
-- **YAGNI ruthlessly** - Remove unnecessary features from all designs.
-- **Explore alternatives** - Always propose 2-3 approaches before settling.
-- **Incremental validation** - Present design, get approval before moving on.
-- **Be flexible** - Go back and clarify when something doesn't make sense.
-- **Specs carry design, not code** - References and contracts yes, implementation logic no.
-- **Design is mandatory, the spec is not** - Always present a design and get approval, then ask whether to formalize it into a spec doc.
-- **If template is present, follow it** - And surface template gaps rather than working around them.

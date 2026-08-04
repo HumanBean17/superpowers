@@ -60,7 +60,7 @@ Create a task for each item and complete them in order. Items 3, 6, 7, 9, and 12
 3. **Load the existing spec (review mode only)** — read the draft spec end to end; note its `Status` and its Open Questions. If the draft lacks a `Status` line or an `## Open Questions` section (e.g., it was produced by the regular `brainstorming` skill), treat it as `Status: draft` with an empty Open Questions section and add both before proceeding.
 4. **Explore project context** — check files, docs, recent commits.
 5. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria. In review mode, frame these as gaps you found while reading the draft.
-6. **Propose 2–3 approaches** — with trade-offs and your recommendation. In review mode, skip if the draft's approach is sound; otherwise propose alternatives to what the draft assumes.
+6. **Propose 2–3 approaches** — with trade-offs and your recommendation; YAGNI ruthlessly — drop unnecessary features from every approach. In review mode, skip if the draft's approach is sound; otherwise propose alternatives to what the draft assumes.
 7. **Present/refine design** — in build mode present the design in sections scaled to complexity, getting approval after each. In review mode walk the draft top-down section by section (see Review mode). Get approval on changes.
 8. **Template fit check** — if a project-level `docs/superpowers/spec-template.md` exists, map the design onto it; surface every mismatch in one message and ask before deviating. Skip if absent. In review mode, re-check the draft against the template and surface any deviations the analyst introduced.
 9. **Write/update the spec** — in build mode, first ask the user whether to write a spec. If they decline (trivial change), go to the decline terminal (see Build mode). Otherwise: build creates a new file at `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` (today's date, topic derived from the feature slug); review updates the loaded draft **in place at its existing path** (do not rename or re-date it). Set `Status: draft` in both modes — promotion to `in_progress` happens later, after user approval. Maintain the Open Questions section. Commit.
@@ -216,15 +216,3 @@ Specs are freeform unless the project provides `docs/superpowers/spec-template.m
 
 > If your project's spec template should reserve a place for **Open Questions** and **Status**, make those sections `[required]` in the template so the fit check enforces them.
 
-## Key Principles
-
-- **Opt-in** — explicit request only; general creative work uses `brainstorming`.
-- **Context before code** — read what the user gave you before exploring the codebase.
-- **One question at a time** — don't overwhelm; break topics into multiple questions.
-- **Same depth for both roles** — never role-gate detailization; defer the unanswerable to Open Questions.
-- **YAGNI ruthlessly** — remove unnecessary features from all designs.
-- **Explore alternatives** — propose 2–3 approaches before settling (build mode); challenge the draft's assumptions (review mode).
-- **Incremental validation** — present/refine, get approval section by section.
-- **Specs carry design, not code** — references and contracts yes, implementation logic no.
-- **Status is honest** — `draft` until genuinely approved; never promote until every Open Question is resolved or explicitly accepted (`- [x]`).
-- **Open Questions are first-class** — record, resolve, never delete; they are the shared memory between rounds.

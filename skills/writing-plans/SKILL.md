@@ -150,12 +150,6 @@ Every step and task must contain the actual design content an engineer needs —
 
 Code is NOT the fix for any of these. The fix is more precise design: exact behavior, expected results, signatures, and data shapes.
 
-## Remember
-- Exact file paths always
-- Complete design in every task — exact signatures, types, data shapes, validation, and test behavior + expected results. Never code.
-- Exact commands with expected output (test runs, git commits)
-- DRY, YAGNI, TDD, frequent commits
-
 ## Self-Review
 
 After writing the complete plan, look at the spec with fresh eyes and check the plan against it. This is a checklist you run yourself — not a subagent dispatch.

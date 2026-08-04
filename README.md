@@ -56,6 +56,20 @@ A new **define-and-execute** skill handles tasks that need no creative work — 
 
 **Rationale:** The full brainstorming → writing-plans → executing flow is right when design is open, but some tasks are already fully specified and only need rigorous execution plus proof. `autonomous-executor` covers the "step away and deliver, decide-and-note" case; `define-and-execute` covers the "fully specified, but stop and ask on anything unstated" case. The two coexist as different ambiguity postures.
 
+### Upstream Sync — v6.2.0 (synced 2026-08-05)
+
+Last synced with upstream [obra/superpowers](https://github.com/obra/superpowers) through commit **`44c9b2d`** (2026-07-28, "docs: remove the 'We're Hiring' section"), one commit past tag **`v6.2.0`** (`3dcbd5c`, 2026-07-23). Fork point: `v6.1.0` (`f268f7c`).
+
+The sync is **selective**, not a full merge — most of the 62 upstream commits are Codex/Gemini/hook work this fork removed on purpose. What was taken:
+
+- **Clean wins (no conflict):** upstream's `writing-good-tests.md` reference (replaces `testing-anti-patterns.md`); the validated skills "compression sweep" (drop recap/social-proof/persuasion prose) on the skills this fork never modified; `find-polluter.sh` `./`-prefix fix.
+- **SDD execution engine:** the v6.2.0 plan-scoped workspace + resume-based fix loop adopted into `subagent-driven-development` — the engine `define-and-execute` already delegates to. Complements (does not overlap) this fork's spec-brainstorming / define-and-execute layer.
+- **Validated cuts ported into the rewritten skills:** `finishing-a-development-branch` (worktree-path bug fix, discard-as-explicit-request, rationalization table), `writing-plans` (dropped "Remember" recap), `requesting-code-review` (rationalization table), `brainstorming` and `spec-brainstorming` (folded "Key Principles" recap into points of use — `spec-brainstorming` is a brainstorming clone and got the same treatment for consistency).
+
+**Deliberately skipped:** all Codex portal packaging and the v6.1.1 Codex release; the re-added Gemini CLI support; Windows/hook work — none of which this fork carries. The fork's no-Gemini platform footprint is preserved (the re-added "Gemini CLI" mention was stripped from `executing-plans`).
+
+**Fork customizations preserved on top of upstream:** the "plans carry design, not code" model-tier guidance in `subagent-driven-development`; the `docs/superpowers/plans/active/` path convention; the spec/plan archive step in `finishing-a-development-branch`; the parallel-reviewer fan-out in `requesting-code-review`.
+
 ## The Basic Workflow
 
 1. **brainstorming** - Activates before writing code. Refines rough ideas through questions, explores alternatives, presents design in sections for validation. Saves design document.
