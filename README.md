@@ -44,6 +44,12 @@ The brainstorming skill now more strongly enforces the principle that **design s
 
 **Rationale:** This separation keeps specs focused on design and prevents implementation details from creeping into the design phase.
 
+### Spec Altitude: Human-Reviewed Spec, Agent-Facing Plan
+
+The `brainstorming` and `spec-brainstorming` skills now state an explicit abstraction-level calibration: the **spec is the human's review surface**, kept at design altitude (components, contracts, decisions); the **plan is the agent-facing artifact** that carries per-task detail (what one task needs to be written, not the design itself). The spec template sets the spec's sections; this governs only the altitude of what goes in them. When a section sprawls into per-task detail a human would skim rather than review, the guidance is to push that down into the plan — not grow the spec, never write code in it. A new self-review "Altitude check" enforces this; a lower bound keeps the spec concrete enough (named components, contracts, key decisions) that a plan agent can still expand it into tasks.
+
+**Rationale:** Specs had drifted toward implementation detail humans couldn't usefully review. The plan is already the designated home for per-task design — `writing-plans`' "plans carry design, not code" mirrors the spec's rule — so the fix is to route that detail there, not bloat the spec or leak code.
+
 ### Code Review Fans Out a Team
 
 The **requesting-code-review** skill dispatches a **team of reviewer subagents in parallel** — one per review scope — instead of a single reviewer. The agent inspects the diff and decides the scope breakdown (by subsystem, concern, or file cluster); there is no fixed set of roles. Findings from all reviewers are merged and deduped before you act on them.
