@@ -1,6 +1,6 @@
 ---
 name: spec-update
-description: "Update an existing spec at Status: in_progress or implemented. Two intents — reconcile: rewrite the body so it describes the change accurately as built or refined, scope unchanged, no plan; evolve: accept new scope and hand the DELTA to writing-plans (implemented → in_progress), then execute just the delta. The body is rewritten in place under a snapshot gate (no inline history). Invoke explicitly to update an implemented or in-progress spec; drafts belong to spec-brainstorming; released specs are terminal."
+description: "Update an existing spec at Status: in_progress or implemented. Two intents — reconcile: rewrite the body so it describes the change accurately as built or refined, scope unchanged, no plan, no code; evolve: accept new scope, update the spec (implemented → in_progress), then plan the delta in plan mode and implement it on approval. Bypasses writing-plans. The body is rewritten in place under a snapshot gate (no inline history). Invoke explicitly to update an implemented or in-progress spec; drafts belong to spec-brainstorming; released specs are terminal."
 ---
 
 # Spec Update (Reconcile / Evolve an existing spec)
@@ -12,7 +12,7 @@ This skill is **opt-in**. Invoke it only when the user explicitly asks to update
 </OPT-IN>
 
 <HARD-GATE>
-Do NOT write code — the body is rewritten in place, at design altitude, never as a log of its own revisions. **Status:** reconcile leaves it unchanged; evolve flips `implemented → in_progress` (or leaves `in_progress`); this skill never sets `implemented` or `released`. In **reconcile** mode: do NOT invoke `writing-plans` (scope is unchanged). In **evolve** mode: `writing-plans` is the only terminal, for the new/changed scope only — never regenerate the whole plan. Do NOT edit a `draft` (route to `spec-brainstorming`) or a `released` spec (route to a new spec via `brainstorming`/`spec-brainstorming`).
+The body is rewritten in place, at design altitude, never as a log of its own revisions. **Reconcile mode:** no code, no plan, status unchanged. **Evolve mode:** do NOT invoke `writing-plans`; do NOT write code until the implementation plan (presented in plan mode) is approved — on approval, implement only the delta, never redoing already-built scope. **Status:** reconcile leaves it unchanged; evolve flips `implemented → in_progress` (or leaves `in_progress`); this skill never sets `implemented` or `released`. Do NOT edit a `draft` (route to `spec-brainstorming`) or a `released` spec (route to a new spec via `brainstorming`/`spec-brainstorming`).
 </HARD-GATE>
 
 ## Core Principles
@@ -79,14 +79,17 @@ Posture: **make the description match reality, scope unchanged.**
 
 ## Evolve Mode
 
-Posture: **grow the change's scope, then plan what isn't yet built.**
+Posture: **grow the change's scope, then plan and implement it in-flow — no `writing-plans` document.**
 
 - Clarifying questions one at a time on the new/changed scope; defer what can't be settled to Open Questions (append-only, never delete).
-- Rewrite the body to include the new scope as target design, next to the existing scope — all present-tense current design, at design altitude (per-task detail goes to the plan), no "added later" / "now also" revision narration.
-- **Hand `writing-plans` the scope that still needs a plan** — it depends on the entry status:
-  - **`implemented`** (plan fully executed): hand only the **delta** — new tasks for the new/changed scope. The existing plan stays; tell writing-plans *"plan only this delta; the existing scope is already implemented."*
-  - **`in_progress`**: hand writing-plans the new scope **plus any base scope not yet executed**. If a plan exists and is partially executed, append the delta to it; if no plan exists yet, writing-plans plans the whole spec. Tell writing-plans *"existing executed scope stays; plan the rest."*
-- **Status:** evolve on `implemented` flips `implemented → in_progress` (re-opened); evolve on `in_progress` leaves it `in_progress`. **Terminal:** invoke `writing-plans`. Do NOT invoke any other skill. After the new scope is executed, `finishing-a-development-branch` re-sets `implemented`.
+- Rewrite the body to include the new scope as target design, next to the existing scope — all present-tense current design, at design altitude (per-task detail goes to the plan), no "added later" / "now also" revision narration. Commit.
+- **Status:** evolve on `implemented` flips `implemented → in_progress` (re-opened); evolve on `in_progress` leaves it `in_progress`.
+- **Plan the delta in plan mode** — enter plan mode and work out the implementation (files, interfaces, test design — design, not code) for only what isn't yet built:
+  - **`implemented`** (was fully built): plan only the **delta** (the new/changed scope); the existing scope is already implemented.
+  - **`in_progress`**: plan the new scope **plus any base scope not yet executed**; if nothing is built yet, plan the whole spec.
+  Present the plan via `ExitPlanMode` for approval.
+- **On approval, implement the delta** in this session, following TDD (use `subagent-driven-development` if subagents are available and the delta is non-trivial). Do NOT redo already-built scope. On completion, `finishing-a-development-branch` re-sets `implemented`.
+- **If the plan is rejected:** the spec stays `in_progress` with the new scope documented but unbuilt; re-enter plan mode when ready. No code is written.
 
 ## Spec Self-Review
 
@@ -124,31 +127,28 @@ digraph spec_update {
     "Determine intent" [shape=diamond];
     "Load spec + plan + built reality" [shape=box];
     "RECONCILE: rewrite body\nto match built reality" [shape=box];
-    "EVOLVE: fold new scope into body\n(snapshot gate)" [shape=box];
+    "EVOLVE: fold new scope into body\n(implemented → in_progress)" [shape=box];
     "Self-review + user review" [shape=box];
-    "Entry status?" [shape=diamond];
-    "Status: unchanged" [shape=box];
-    "implemented → in_progress" [shape=box];
-    "in_progress (unchanged)" [shape=box];
-    "writing-plans (delta / remaining scope)" [shape=doublecircle];
+    "Plan mode: present delta plan" [shape=box];
+    "Plan approved?" [shape=diamond];
+    "Implement delta (TDD)" [shape=box];
     "Commit + stop" [shape=doublecircle];
+    "Status: in_progress\n(scope documented, unbuilt)" [shape=doublecircle];
 
     "Determine intent" -> "Load spec + plan + built reality";
     "Load spec + plan + built reality" -> "RECONCILE: rewrite body\nto match built reality" [label="reconcile"];
-    "Load spec + plan + built reality" -> "EVOLVE: fold new scope into body\n(snapshot gate)" [label="evolve"];
+    "Load spec + plan + built reality" -> "EVOLVE: fold new scope into body\n(implemented → in_progress)" [label="evolve"];
     "RECONCILE: rewrite body\nto match built reality" -> "Self-review + user review";
-    "EVOLVE: fold new scope into body\n(snapshot gate)" -> "Self-review + user review";
-    "Self-review + user review" -> "Status: unchanged" [label="reconcile"];
-    "Status: unchanged" -> "Commit + stop";
-    "Self-review + user review" -> "Entry status?" [label="evolve"];
-    "Entry status?" -> "implemented → in_progress" [label="implemented"];
-    "Entry status?" -> "in_progress (unchanged)" [label="in_progress"];
-    "implemented → in_progress" -> "writing-plans (delta / remaining scope)";
-    "in_progress (unchanged)" -> "writing-plans (delta / remaining scope)";
+    "EVOLVE: fold new scope into body\n(implemented → in_progress)" -> "Self-review + user review";
+    "Self-review + user review" -> "Commit + stop" [label="reconcile"];
+    "Self-review + user review" -> "Plan mode: present delta plan" [label="evolve"];
+    "Plan mode: present delta plan" -> "Plan approved?";
+    "Plan approved?" -> "Implement delta (TDD)" [label="yes"];
+    "Plan approved?" -> "Status: in_progress\n(scope documented, unbuilt)" [label="no (re-enter later)"];
 }
 ```
 
-**Terminal state.** Reconcile ends at a committed spec, status unchanged, no plan. Evolve ends at `writing-plans`: on an `implemented` spec it flips `implemented → in_progress` and plans only the delta; on an `in_progress` spec the status is unchanged and writing-plans covers the new scope plus any un-executed base scope. Code is written only by the plan's implementer — never here.
+**Terminal state.** Reconcile ends at a committed spec, status unchanged, no plan, no code. Evolve ends one of two ways: the delta plan is **approved** → implement it in-session (TDD; `finishing` later re-sets `implemented`); or **rejected** → the spec stays `in_progress` with the new scope documented but unbuilt. `writing-plans` is never invoked — planning happens in plan mode. Code is written only after plan approval, and only for the delta.
 
 ## Custom Spec Template
 
