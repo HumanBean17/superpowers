@@ -25,6 +25,7 @@ These principles override the rest of this skill when in conflict.
 2. **Specs carry design, not code.** The spec describes WHAT to build and WHY, with references to classes, methods, fields, configurations, tables, DTOs, and contracts (JSON Schema, schemas, config). It MUST NOT contain implementation logic — method bodies, algorithms, or actual code. Writing code is the job of the agent that implements the plan. Your job here is to design.
 3. **Same depth for both roles — never role-gate detailization.** The line between a gap an analyst would catch and one a developer would catch is thin, so both rounds see the same data and may go as deep as the conversation needs. Never mute detail based on who is driving: "I'm an analyst, skip the Java class names" and "I'm a developer, skip the JSON schema" are both wrong. When something genuinely can't be answered in the current round, defer it to **Open Questions** rather than skipping or guessing.
 4. **Calibrate to a human-reviewable altitude.** The spec is the reviewer's surface; the plan is the agent-facing artifact that carries per-task detail (what one task needs to be written, not the design itself). The spec template sets the spec's sections; this governs only their altitude. Keep each section at design altitude — if it sprawls into per-task detail a human would skim rather than review, push it down into the plan, not into the spec — and never into code (Principle #2). This sets the *written spec's* altitude; Principle #3 still governs how deep the *conversation* goes — explore fully, then capture at review altitude, deferring per-task detail to the plan. But keep it concrete enough that a plan agent could expand the spec into tasks.
+5. **The spec describes one change to the system, not a log of its own revisions.** The body states the target design of the change in the present tense and is **rewritten in place** as the design evolves — never as a changelog of the document (no "Deleted:", "Removed:", "Changed:", "Previously:", before/after, edit-dates). The document's revision history is git commits + the archived ADR. *Open Questions is the exception: it records decisions by design.* This governs build-mode iteration on an existing draft too — rewrite the body, don't annotate it.
 
 ## The Spec Lifecycle
 
@@ -35,7 +36,7 @@ A spec moves through two rounds and carries a status:
   - **`draft`** — still has open questions, or the reviewer is not ready to approve. Stop here. Or
   - **approved → `in_progress`** — every Open Question is resolved or explicitly accepted; invoke `writing-plans`.
 
-The `Status` field has exactly two values: **`draft`** and **`in_progress`**. "Approved" is the *event* that flips `draft → in_progress` in review mode, not a separate stored state.
+The `Status` field has four values — **`draft`**, **`in_progress`**, **`implemented`**, **`released`** — but this skill only writes the first two. `draft → in_progress` is the approval event in review mode (not a separate stored state). Once a spec is `in_progress` the rest of the lifecycle is owned elsewhere: `superpowers:finishing-a-development-branch` sets `implemented` (tests green) and `released` (merge → archive), and `superpowers:spec-update` reconciles or evolves an `in_progress`/`implemented` spec. See `superpowers:spec-update` for the full state machine.
 
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
 
@@ -46,7 +47,7 @@ Every project goes through this process. "Simple" projects are where unexamined 
 This is Checklist item 1 — resolve it before anything else. Pick the mode from the entry signal:
 
 - **Review mode** — the user pointed at an existing draft spec (a path, "review the spec", "developer round"), or there is exactly one draft spec under `docs/superpowers/specs/active/` matching the topic (matched by filename slug or the path given). If two or more drafts could match, list them and ask the user which to review before proceeding.
-- **Build mode** — the entry is an idea/context with no existing draft spec ("build a spec", "analyst round", a new feature to design). If a draft for this topic already exists and the user wants to iterate (analyst re-running build), that's allowed: keep `Status: draft` and carry forward the existing Open Questions (append-only — never delete).
+- **Build mode** — the entry is an idea/context with no existing draft spec ("build a spec", "analyst round", a new feature to design). If a draft for this topic already exists and the user wants to iterate (analyst re-running build), that's allowed: keep `Status: draft` and carry forward the existing Open Questions (append-only — never delete). Rewrite the body in place under the snapshot gate (Core Principle #5) — don't annotate the prior draft with what changed.
 - **No draft found in review mode** — tell the user, then offer to start in build mode. Don't fail silently.
 - **Override** — the user can always force a mode ("I'm the analyst, building" / "I'm reviewing draft X"). Honor it.
 
@@ -147,9 +148,12 @@ or
 **Status:** in_progress
 ```
 
+This skill writes only `draft` and `in_progress`:
+
 - Build mode always writes/leaves `draft`.
 - Review mode leaves `draft`, or flips to `in_progress` at the terminal on approval (gated on Open Questions).
-- Archive (`active/` → `archive/` on release) is handled by `superpowers:finishing-a-development-branch`, not here.
+
+The later statuses are written by other skills — `implemented` (plan executed, tests green) and `released` (merged → archived as ADR) by `superpowers:finishing-a-development-branch`; updates to an `in_progress`/`implemented` spec by `superpowers:spec-update`. This skill never sets them.
 
 ## Spec Self-Review
 
@@ -164,6 +168,7 @@ After writing/updating the spec, look at it with fresh eyes:
 7. **Internal consistency:** do sections contradict each other? Does the architecture match the feature descriptions?
 8. **Scope check:** focused enough for a single implementation plan, or does it need decomposition?
 9. **Ambiguity check:** could any requirement be read two ways? Pick one and make it explicit, or defer to Open Questions.
+10. **Snapshot/log check:** any revision-log text in the body — e.g. `Deleted:`, `Removed:`, `Changed:`, `Updated:`, `Previously:`, `Old:`, `New:`, `was →`, `~~strikethrough~~`, before/after framing, edit-dates? (List is exemplary.) Rewrite each span as flat present-tense target design of the change. The body describes the change; it is not a changelog of itself. *(Open Questions' checked items are decision records, not log entries — leave them; no other section is exempt.)*
 
 Fix issues inline. No need to re-review — just fix and move on. Note: a legitimate Open Question is **not** a placeholder — don't "fix" it by inventing an answer.
 

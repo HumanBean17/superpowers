@@ -20,6 +20,14 @@ A new **spec-brainstorming** skill adds a two-round spec lifecycle for teams wit
 
 **Rationale:** The original `brainstorming` skill stays proactive for general creative work; `spec-brainstorming` is opt-in, invoked only when a spec build/review round is explicitly requested.
 
+### Spec Lifecycle: Four Statuses + a spec-update Skill
+
+The spec `Status` field grows from two values (`draft`, `in_progress`) to four: **`draft` → `in_progress` → `implemented` → `released`**. `implemented` marks a spec whose plan is executed and tests are green but not yet merged; `released` is terminal, set when the change merges and the spec archives as an ADR. `finishing-a-development-branch` writes both (`implemented` at green tests, `released` at archive), so a spec is never archived while `in_progress`.
+
+A new opt-in **spec-update** skill (sibling to spec-brainstorming) reconciles or evolves an existing `in_progress`/`implemented` spec. **Reconcile** rewrites the body to match built reality (scope unchanged, no plan); **evolve** folds in new scope, then plans the delta in plan mode and implements it on approval (`implemented → in_progress`) — bypassing `writing-plans`; the workflow is not waterfall. Both run under a **snapshot gate**: the body describes one change to the system, rewritten in place, never a changelog of itself (no `Deleted:`/`Changed:`/before-after); the document's history is git + the archived ADR. Drafts stay in spec-brainstorming, which gains the same snapshot principle and self-review check. The regular `brainstorming` skill now writes a `Status` line and promotes `draft → in_progress` before handing off to `writing-plans`.
+
+**Rationale:** Real work needs changes after a spec and plan are implemented, but ad-hoc prompt edits corrupted specs — agents treated them as logs and drifted the detailization level. Explicit terminal/implemented statuses plus a protected update skill with the snapshot gate keep specs honest across the whole non-waterfall lifecycle.
+
 ### Custom Spec Templates
 
 Support for **project-level custom spec templates** has been added. If you create a `docs/superpowers/spec-template.md` file in your project, the brainstorming skill will use it as a template for writing design specs. Templates use a `[required]` suffix to mark mandatory sections.
@@ -110,6 +118,7 @@ The sync is **selective**, not a full merge — most of the 62 upstream commits 
 **Collaboration** 
 - **brainstorming** - Socratic design refinement
 - **spec-brainstorming** - Two-round spec lifecycle (analyst build → developer review); opt-in
+- **spec-update** - Reconcile/evolve an existing in_progress/implemented spec (snapshot-gated; plan-mode + direct implement for new scope)
 - **define-and-execute** - Fast path for fully-specified tasks: validate goal+criteria, execute via subagents, return an evidence report; stops and asks on anything unstated
 - **writing-plans** - Detailed implementation plans
 - **executing-plans** - Batch execution with checkpoints
