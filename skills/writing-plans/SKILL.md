@@ -30,6 +30,8 @@ These principles override the rest of this skill when in conflict.
 
 If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
 
+**Delta plans (from spec-update evolve):** If you are invoked to plan only a **delta** — new or changed scope on an already-implemented spec — plan exactly that delta. Do not regenerate tasks for already-implemented scope; append the delta as new tasks (or a sibling delta plan). The spec-update skill states the delta at handoff; honor that boundary.
+
 ## File Structure
 
 Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.

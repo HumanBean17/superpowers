@@ -20,6 +20,7 @@ These principles override the rest of this skill when in conflict.
 1. **Context before code.** Before exploring the codebase, carefully read the context the user provided - the task description, linked tickets, attached files, references, and any constraints stated in the message. Only then explore the code. The design must reflect what the user actually asked for, not what you assume.
 2. **Specs carry design, not code.** The spec describes WHAT to build and WHY, with references to classes, methods, fields, configurations, tables, DTOs, and contracts (JSON Schema, schemas, config). It MUST NOT contain implementation logic - method bodies, algorithms, or actual code. Writing code is the job of the agent that implements the plan. Your job here is to design.
 3. **Calibrate to a human-reviewable altitude.** The spec is the human's review surface; the plan is the agent-facing artifact that carries per-task detail (what one task needs to be written, not the design itself). The spec template sets the spec's sections; this governs only their altitude. Keep each section at design altitude — if it sprawls into per-task detail a human would skim rather than review, push it down into the plan, not into the spec — and never into code (Principle #2). But keep it concrete enough that a plan agent could expand the spec into tasks: the named components, contracts, and key decisions must be present.
+4. **The spec describes one change to the system, not a log of its own revisions.** The body states the target design of the change in the present tense and is rewritten in place as the design evolves — never as a changelog of the document (no "Deleted:", "Changed:", "Previously:", before/after, edit-dates). The document's revision history is git commits + the archived ADR. *Open Questions is the only exception: it records decisions by design.*
 
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
 
@@ -41,7 +42,7 @@ You MUST create a task for each of these items and complete them in order:
 8. **Write design doc** — save to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` and commit
 9. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 10. **User reviews written spec** — ask user to review the spec file before proceeding
-11. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+11. **Transition to implementation** — set the spec `Status: in_progress` and commit, then invoke writing-plans to create the plan
 
 ## Process Flow
 
@@ -140,6 +141,7 @@ The approved design is the shared understanding — go straight to implementatio
 - Write the validated design (spec) to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md`.
   - `active/` holds specs for changes currently being implemented — they are the current source of truth. When the change is released (merged into its base branch), the spec and its plan move to `specs/archive/` and `plans/archive/`, becoming ADRs: a historical record of past decisions, no longer a description of current domain state. That move happens in `superpowers:finishing-a-development-branch`, not here.
   - (User preferences for spec location override this default).
+- Start the spec with a `**Status:** draft` line directly under its `#` title — every spec carries a Status (see spec-brainstorming / spec-update for the four-state lifecycle).
 - If a project-level `docs/superpowers/spec-template.md` is present, conform by default and surface any mismatches before writing rather than silently extending the template — see Custom Spec Template for the fit-check protocol.
 - Use elements-of-style:writing-clearly-and-concisely skill if available.
 - The spec carries design, NOT implementation code. Reference classes, methods, fields, configs, DTOs, and contracts freely; do not include method bodies or algorithms. JSON Schema, DTO structures, and config snippets that define **contracts** are allowed - implementation logic is not.
@@ -155,6 +157,7 @@ After writing the spec, look at it with fresh eyes:
 5. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions?
 6. **Scope check:** Is this focused enough for a single implementation plan, or does it need decomposition?
 7. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
+8. **Snapshot/log check:** Any revision-log text — e.g. `Deleted:`, `Changed:`, `Updated:`, `Previously:`, `was →`, `~~strikethrough~~`, before/after framing? (List is exemplary.) The body describes the change, not a changelog of itself; rewrite such spans as present-tense target design of the change. (Also confirm a `**Status:** draft` line sits under the title.)
 
 Fix any issues inline. No need to re-review — just fix and move on.
 
@@ -167,7 +170,7 @@ Wait for the user's response. If they request changes, make them and re-run the 
 
 **Implementation:**
 
-- Invoke the writing-plans skill to create the implementation plan.
+- Set the spec's `Status` to `in_progress` (it has been approved) and commit, then invoke the writing-plans skill to create the implementation plan.
 - Do NOT invoke any other skill. writing-plans is the next step.
 
 ## Custom Spec Template

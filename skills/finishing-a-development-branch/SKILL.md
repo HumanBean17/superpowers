@@ -7,7 +7,7 @@ description: Use when implementation is complete, all tests pass, and you need t
 
 ## Overview
 
-**Core principle:** Verify tests → Detect environment → Present options → Execute choice → Archive released specs/plans → Clean up.
+**Core principle:** Verify tests → mark spec `implemented` → Detect environment → Present options → Execute choice → Archive released specs/plans (set `Status: released`) → Clean up.
 
 **Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
 
@@ -23,7 +23,13 @@ Tests failing (<N> failures). Must fix before completing:
 [Show failures]
 ```
 
-**If tests pass:** continue to Step 2.
+**If tests pass:** the plan is fully executed and the code is complete. Find the work's spec under `docs/superpowers/specs/active/` and set its status:
+- `in_progress` → set to `implemented` (the "done but not yet released" state) and commit.
+- already `implemented`/`released` → leave it.
+- `draft` (or no `Status` line — treat as `draft`) → the spec was **never approved**. Leave its status unchanged and tell the user; do not promote it. (A draft must be approved via `spec-brainstorming` before it can be released.)
+- no spec → skip.
+
+Then continue to Step 2.
 
 ## Step 2: Detect Environment
 
@@ -110,11 +116,13 @@ delete the branch:
 git branch -d <feature-branch>
 ```
 
-**Archive the released spec & plan (ADR transition).** The change is now in `<base-branch>`, so its spec and plan are no longer current source of truth. Move them from `active/` to `archive/`, where they become ADRs — a historical record of a past decision, not a description of current domain state:
+**Archive the released spec & plan (ADR transition).** The change is now in `<base-branch>`, so its spec and plan are no longer current source of truth. Set each archived spec's `Status` line to `released` — its terminal state — **only if it is `implemented`** (set in Step 1). Skip any spec still at `draft` (never approved): leave it in `active/` and tell the user to approve or discard it. Then move the released specs and their plans from `active/` to `archive/`, where they become ADRs — a historical record of a past decision, not a description of current domain state:
 
 ```bash
 mkdir -p docs/superpowers/specs/archive docs/superpowers/plans/archive
-# Move the spec(s) and plan(s) this branch implemented.
+# The spec(s) and plan(s) this branch implemented.
+# Set each spec's Status to 'released' (terminal) first — use your edit tool, not a shell command.
+# Guard each move on existence: a spec-only change (e.g. define-and-execute) may have no plan — skip the plan move if absent.
 # If more than one is active, ask your human partner which to archive before moving.
 git mv docs/superpowers/specs/active/<spec>.md docs/superpowers/specs/archive/
 git mv docs/superpowers/plans/active/<plan>.md docs/superpowers/plans/archive/
@@ -138,7 +146,7 @@ present, and report the URL to your human partner.
 
 Keep the worktree — your human partner iterates on PR feedback there.
 
-**Do NOT archive the spec/plan yet** — the PR is open, not merged. Archiving (`active/` → `archive/`, ADR) belongs once the change actually lands in the base branch. Remind your human partner to move the spec and plan to `archive/` after the PR merges (or re-run this skill's archive step at that point).
+**Do NOT archive the spec/plan yet, and leave the spec `Status: implemented`** — the PR is open, not merged. `released` and archiving (`active/` → `archive/`, ADR) belong once the change actually lands in the base branch. Remind your human partner to set the spec to `released` and move the spec and plan to `archive/` after the PR merges (or re-run this skill's archive step at that point).
 
 ### Option 3: Keep As-Is
 
@@ -194,12 +202,14 @@ place. If your platform provides a workspace-exit tool, use it.
 
 ## Quick Reference
 
-| Option | Merge | Push | Keep Worktree | Cleanup Branch | Archive spec/plan |
-|--------|-------|------|---------------|----------------|-------------------|
-| 1. Merge locally | yes | - | - | yes | yes (active→archive, ADR) |
-| 2. Create PR | - | yes | yes | - | after PR merges |
-| 3. Keep as-is | - | - | yes | - | - |
-| Discard (explicit request only) | - | - | - | yes (force) | - |
+| Option | Merge | Push | Keep Worktree | Cleanup Branch | Spec status | Archive spec/plan |
+|--------|-------|------|---------------|----------------|-------------|-------------------|
+| 1. Merge locally | yes | - | - | yes | implemented → released | yes (active→archive, ADR) |
+| 2. Create PR | - | yes | yes | - | implemented (→ released after merge) | after PR merges |
+| 3. Keep as-is | - | - | yes | - | implemented | - |
+| Discard (explicit request only) | - | - | - | yes (force) | - | - |
+
+Step 1 sets `implemented` for every option once tests pass (a `draft` spec is left un-promoted); only a local merge promotes it to `released`. Discard deletes the feature branch — and with it Step 1's `implemented` commit — so the spec reverts to its prior status on the base branch.
 
 ## Common Rationalizations
 
