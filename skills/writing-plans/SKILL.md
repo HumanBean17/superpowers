@@ -26,6 +26,10 @@ These principles override the rest of this skill when in conflict.
 - `active/` holds plans for changes currently being implemented — current source of truth. On release (merge into the base branch), the plan moves to `plans/archive/` alongside its spec and becomes an ADR (past decision, not current domain state). The move is handled by `superpowers:finishing-a-development-branch`.
 - (User preferences for plan location override this default)
 
+## Modular Specs
+
+A spec may be modular — a directory with `00-index.md` + section files (see `brainstorming` → Modular Specs). Read `00-index.md` then every section file; planning needs the whole design. The plan stays self-contained, so the spec's layout is invisible to execution.
+
 ## Scope Check
 
 If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.

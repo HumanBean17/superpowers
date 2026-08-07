@@ -23,7 +23,7 @@ Tests failing (<N> failures). Must fix before completing:
 [Show failures]
 ```
 
-**If tests pass:** the plan is fully executed and the code is complete. Find the work's spec under `docs/superpowers/specs/active/` and set its status:
+**If tests pass:** the plan is fully executed and the code is complete. Find the work's spec under `docs/superpowers/specs/active/` — a single `…-design.md` file, or a modular spec as a directory containing `00-index.md` — and set its status (edit the file, or `00-index.md` for a modular spec):
 - `in_progress` → set to `implemented` (the "done but not yet released" state) and commit.
 - already `implemented`/`released` → leave it.
 - `draft` (or no `Status` line — treat as `draft`) → the spec was **never approved**. Leave its status unchanged and tell the user; do not promote it. (A draft must be approved via `spec-brainstorming` before it can be released.)
@@ -116,15 +116,17 @@ delete the branch:
 git branch -d <feature-branch>
 ```
 
-**Archive the released spec & plan (ADR transition).** The change is now in `<base-branch>`, so its spec and plan are no longer current source of truth. Set each archived spec's `Status` line to `released` — its terminal state — **only if it is `implemented`** (set in Step 1). Skip any spec still at `draft` (never approved): leave it in `active/` and tell the user to approve or discard it. Then move the released specs and their plans from `active/` to `archive/`, where they become ADRs — a historical record of a past decision, not a description of current domain state:
+**Archive the released spec & plan (ADR transition).** The change is now in `<base-branch>`, so its spec and plan are no longer current source of truth. Set each archived spec's `Status` line to `released` — its terminal state — **only if it is `implemented`** (set in Step 1); for a modular spec the `Status` line is in `00-index.md`. Skip any spec still at `draft` (never approved): leave it in `active/` and tell the user to approve or discard it. Then move the released specs and their plans from `active/` to `archive/`, where they become ADRs — a historical record of a past decision, not a description of current domain state:
 
 ```bash
 mkdir -p docs/superpowers/specs/archive docs/superpowers/plans/archive
 # The spec(s) and plan(s) this branch implemented.
-# Set each spec's Status to 'released' (terminal) first — use your edit tool, not a shell command.
+# Set each spec's Status to 'released' (terminal) first — use your edit tool, not a shell command:
+#   single-file spec → edit the Status line in its .md file;  modular spec → edit it in 00-index.md.
 # Guard each move on existence: a spec-only change (e.g. define-and-execute) may have no plan — skip the plan move if absent.
 # If more than one is active, ask your human partner which to archive before moving.
-git mv docs/superpowers/specs/active/<spec>.md docs/superpowers/specs/archive/
+# <spec-name> is the spec's entry under active/ — either <topic>-design.md (single file) or <topic>/ (modular directory); git mv moves either.
+git mv docs/superpowers/specs/active/<spec-name> docs/superpowers/specs/archive/
 git mv docs/superpowers/plans/active/<plan>.md docs/superpowers/plans/archive/
 git commit -m "docs: archive spec/plan for <feature> (released → ADR)"
 ```

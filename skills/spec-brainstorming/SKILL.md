@@ -65,7 +65,7 @@ Create a task for each item and complete them in order. Items 3, 6, 7, 9, and 12
 6. **Propose 2–3 approaches** — with trade-offs and your recommendation; YAGNI ruthlessly — drop unnecessary features from every approach. In review mode, skip if the draft's approach is sound; otherwise propose alternatives to what the draft assumes.
 7. **Present/refine design** — in build mode present the design in sections scaled to complexity, getting approval after each. In review mode walk the draft top-down section by section (see Review mode). Get approval on changes.
 8. **Template fit check** — if a project-level `docs/superpowers/spec-template.md` exists, map the design onto it; surface every mismatch in one message and ask before deviating. Skip if absent. In review mode, re-check the draft against the template and surface any deviations the analyst introduced.
-9. **Write/update the spec** — in build mode, first ask the user whether to write a spec. If they decline (trivial change), go to the decline terminal (see Build mode). Otherwise: build creates a new file at `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` (today's date, topic derived from the feature slug); review updates the loaded draft **in place at its existing path** (do not rename or re-date it). Set `Status: draft` in both modes — promotion to `in_progress` happens later, after user approval. Maintain the Open Questions section. Commit.
+9. **Write/update the spec** — in build mode, first ask the user whether to write a spec. If they decline (trivial change), go to the decline terminal (see Build mode). Otherwise: build creates a new file at `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` (today's date, topic derived from the feature slug); review updates the loaded draft **in place at its existing path** (do not rename or re-date it). If modular, write/update per [Modular Specs](#modular-specs). Set `Status: draft` in both modes — promotion to `in_progress` happens later, after user approval. Maintain the Open Questions section. Commit.
 10. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope, code leakage, status correctness, and Open Questions integrity (see below).
 11. **User reviews the written spec** — ask the user to review the spec file.
 12. **Transition** — branches by mode (see Build mode / Review mode terminals below).
@@ -136,7 +136,7 @@ Rules:
 
 ## Status Field
 
-A single visible line, placed immediately under the spec's `#` title:
+A single visible line, placed immediately under the spec's `#` title (for a modular spec, that title is in `00-index.md`):
 
 ```markdown
 **Status:** draft
@@ -169,6 +169,7 @@ After writing/updating the spec, look at it with fresh eyes:
 8. **Scope check:** focused enough for a single implementation plan, or does it need decomposition?
 9. **Ambiguity check:** could any requirement be read two ways? Pick one and make it explicit, or defer to Open Questions.
 10. **Snapshot/log check:** any revision-log text in the body — e.g. `Deleted:`, `Removed:`, `Changed:`, `Updated:`, `Previously:`, `Old:`, `New:`, `was →`, `~~strikethrough~~`, before/after framing, edit-dates? (List is exemplary.) Rewrite each span as flat present-tense target design of the change. The body describes the change; it is not a changelog of itself. *(Open Questions' checked items are decision records, not log entries — leave them; no other section is exempt.)*
+11. **Modular integrity (if the spec is modular):** `00-index.md` is the only file carrying a `Status:` line or an `## Open Questions` heading; every section file appears in the TOC and every TOC entry has a file; Status and Open Questions are not duplicated in any section file.
 
 Fix issues inline. No need to re-review — just fix and move on. Note: a legitimate Open Question is **not** a placeholder — don't "fix" it by inventing an answer.
 
@@ -219,7 +220,13 @@ Specs are freeform unless the project provides `docs/superpowers/spec-template.m
 
 **Format.** A markdown outline of sections, each a suggestion unless its heading is suffixed `[required]` (strip that tag from the output).
 
+**Modular.** If the template's first line is `<!-- superpowers: modular -->`, the spec is modular (see [Modular Specs](#modular-specs)); `[required]` tags still apply across the section files, and review re-checks that each `[required]` section was written as its file.
+
 **Fit check.** Map the design onto the template. Drop non-required sections silently. For any `[required]` section that doesn't fit, any section the task needs but the template lacks, or any conflict — present all mismatches in one batched message and ask before deviating.
 
 > If your project's spec template should reserve a place for **Open Questions** and **Status**, make those sections `[required]` in the template so the fit check enforces them.
+
+## Modular Specs
+
+A spec may be **modular** — a directory with `00-index.md` + section files; see the `brainstorming` skill's Modular Specs for the layout, access protocol, and convert action. In this skill: **build** creates the layout when the template is modular; **review** reads `00-index.md` then each section file in TOC order (one file per step); either round converts a single-file spec on request.
 

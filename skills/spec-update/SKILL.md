@@ -60,10 +60,10 @@ Create a task for each and complete in order. Items 1, 5, 6, and 9 branch by int
 
 1. **Determine intent** — reconcile vs evolve (Step 0). Refuse `draft`/`released` targets.
 2. **Read the provided context** — what the user says drifted, or what scope is being added.
-3. **Load the spec, its plan, and built reality** — read the spec end to end; read its plan under `docs/superpowers/plans/active/`; inspect the diff/code/commits for what was actually built. Note the `Status`.
+3. **Load the spec, its plan, and built reality** — read the spec (single-file: the whole file; modular: `00-index.md` then the section file(s) this update touches — for reconcile that is every section, since reconcile compares the whole design against built reality; see [Modular Specs](#modular-specs)); read its plan under `docs/superpowers/plans/active/`; inspect the diff/code/commits for what was actually built. Note the `Status`.
 4. **Explore project context** — files, docs, recent commits.
 5. **Ask clarifying questions** — one at a time. In reconcile: frame as drift you found ("the spec says X, but the code does Y — which is current?"). In evolve: frame as gaps the new scope opens.
-6. **Rewrite the body in place** — under the snapshot gate (Core Principle #3). In reconcile: correct the description so it states the change accurately as built; fix altitude and consistency; scope unchanged. In evolve: fold the new scope into the body as target design, alongside the existing scope (all stated as current design, never as history). Keep the spec at its existing path; do not rename or re-date. Commit.
+6. **Rewrite the body in place** — under the snapshot gate (Core Principle #3). In reconcile: correct the description so it states the change accurately as built; fix altitude and consistency; scope unchanged. In evolve: fold the new scope into the body as target design, alongside the existing scope (all stated as current design, never as history). Keep the spec at its existing path; do not rename or re-date. If the spec is modular (see [Modular Specs](#modular-specs)), edit the relevant section file(s) in place — not the whole spec — and a brand-new section becomes a new section file with a TOC update in `00-index.md`. Commit.
 7. **Spec self-review** — including the snapshot check (below).
 8. **User reviews the updated spec** — ask the user to review.
 9. **Transition** — branches by intent (terminals below).
@@ -82,7 +82,7 @@ Posture: **make the description match reality, scope unchanged.**
 Posture: **grow the change's scope, then plan and implement it in-flow — no `writing-plans` document.**
 
 - Clarifying questions one at a time on the new/changed scope; defer what can't be settled to Open Questions (append-only, never delete).
-- Rewrite the body to include the new scope as target design, next to the existing scope — all present-tense current design, at design altitude (per-task detail goes to the plan), no "added later" / "now also" revision narration. Commit.
+- Rewrite the body to include the new scope as target design, next to the existing scope — all present-tense current design, at design altitude (per-task detail goes to the plan), no "added later" / "now also" revision narration. If the spec is modular, a genuinely new section becomes a new `NN-<slug>.md` file (added to the index's TOC); changes to existing scope edit that section file in place. Commit.
 - **Status:** evolve on `implemented` flips `implemented → in_progress` (re-opened); evolve on `in_progress` leaves it `in_progress`.
 - **Plan the delta in plan mode** — enter plan mode and work out the implementation (files, interfaces, test design — design, not code) for only what isn't yet built:
   - **`implemented`** (was fully built): plan only the **delta** (the new/changed scope); the existing scope is already implemented.
@@ -99,6 +99,7 @@ After rewriting the body, look at it with fresh eyes. Run the standard checks �
 2. **Before/after framing:** any "originally X, now Y" or strikethrough narration → flatten to the current target design.
 3. **Altitude:** per-task detail a human would skim rather than review belongs in the plan. Push it down; do not grow the spec.
 4. **Reality match (reconcile):** does every reconciled section now match what was built? No invented behavior.
+5. **Modular integrity (if the spec is modular):** `00-index.md` is the only file carrying a `Status:` line or an `## Open Questions` heading; every section file appears in the TOC and every TOC entry has a file; a new section was added as a file with a matching TOC row.
 
 *(Open Questions' checked items carry resolution + date by design — those are decision records, not document revisions; the scan above does not flag them. No other section is exempt — do not invent a "Notes"/"History"/"Change Log" section to park revision narration.)*
 
@@ -152,4 +153,8 @@ digraph spec_update {
 
 ## Custom Spec Template
 
-Same fit-check protocol as `spec-brainstorming`: if `docs/superpowers/spec-template.md` exists, map the updated design onto it and surface every mismatch in one batched message before deviating. A `Status` line and an `## Open Questions` section are expected; add them if missing.
+Same fit-check protocol as `spec-brainstorming`: if `docs/superpowers/spec-template.md` exists, map the updated design onto it and surface every mismatch in one batched message before deviating. A `Status` line and an `## Open Questions` section are expected; add them if missing. If the spec is modular (`00-index.md` + section files), follow the [Modular Specs](#modular-specs) access protocol regardless of the template.
+
+## Modular Specs
+
+A spec may be modular — see the `brainstorming` skill's Modular Specs for the layout and access protocol. Read `00-index.md` then the section file(s) this update touches (every section for reconcile, only the touched ones for evolve); edit in place. A genuinely new section becomes a new `NN-<slug>.md` file with a TOC row in the index; Status is unchanged in reconcile. Convert on request.

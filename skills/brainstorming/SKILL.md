@@ -39,10 +39,10 @@ You MUST create a task for each of these items and complete them in order:
    - **No spec** → mark all brainstorming tasks complete, then proceed to implementation (no spec doc, no plan).
    - **Yes spec** → continue to steps 7-11.
 7. **Template fit check** — if a project-level `docs/superpowers/spec-template.md` exists, map the approved design onto it; surface every mismatch in one message and ask before deviating. Skip if absent. See Custom Spec Template.
-8. **Write design doc** — save to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` and commit
+8. **Write design doc** — save to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` and commit. If the spec is modular (the template's modular flag, or the user asked to convert — see [Modular Specs](#modular-specs)), write it as the modular layout (`00-index.md` + one file per section) instead of a single file.
 9. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 10. **User reviews written spec** — ask user to review the spec file before proceeding
-11. **Transition to implementation** — set the spec `Status: in_progress` and commit, then invoke writing-plans to create the plan
+11. **Transition to implementation** — set the spec `Status: in_progress` (in `00-index.md` if the spec is modular) and commit, then invoke writing-plans to create the plan
 
 ## Process Flow
 
@@ -158,6 +158,7 @@ After writing the spec, look at it with fresh eyes:
 6. **Scope check:** Is this focused enough for a single implementation plan, or does it need decomposition?
 7. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
 8. **Snapshot/log check:** Any revision-log text — e.g. `Deleted:`, `Changed:`, `Updated:`, `Previously:`, `was →`, `~~strikethrough~~`, before/after framing? (List is exemplary.) The body describes the change, not a changelog of itself; rewrite such spans as present-tense target design of the change. (Also confirm a `**Status:** draft` line sits under the title.)
+9. **Modular integrity (if the spec is modular):** `00-index.md` is the only file carrying a `Status:` line or an `## Open Questions` heading; every section file appears in the TOC and every TOC entry has a file; Status and Open Questions are not duplicated in any section file.
 
 Fix any issues inline. No need to re-review — just fix and move on.
 
@@ -179,5 +180,15 @@ Specs are freeform unless the project provides `docs/superpowers/spec-template.m
 
 **Format.** A markdown outline of sections, each a suggestion unless its heading is suffixed `[required]` (strip that tag from the output).
 
+**Modular.** If the template's first line is `<!-- superpowers: modular -->`, the spec is written as the modular layout (see [Modular Specs](#modular-specs) below) — `00-index.md` plus one file per `##` section — instead of a single file. `[required]` tags still apply, enforced across the section files. The fit check is unchanged: map the design onto the template's sections.
+
 **Fit check.** Map the approved design onto the template. Drop non-required sections silently. For any `[required]` section that doesn't fit, any section the task needs but the template lacks, or any conflict — present all mismatches in one batched message and ask before deviating.
+
+## Modular Specs
+
+A large spec may be **modular**: a directory `docs/superpowers/specs/active/<topic>/` holding `00-index.md` (title, `Status`, `## Open Questions`, a one-line-per-section TOC, and a short elevator) plus one file per top-level section (`NN-<slug>.md`). **`Status` and `## Open Questions` live only in `00-index.md`** — the index is the one file every operation reads first. Detect modular by whether the spec path is a directory containing `00-index.md`.
+
+**Access:** read `00-index.md` first, then only the section file(s) the operation needs; edit in place (the section file, or the index for Status / Open Questions / TOC). Read every section only when an operation needs the whole design (planning; reconcile in `spec-update`).
+
+**Becoming modular:** from creation if the spec template's first line is `<!-- superpowers: modular -->`, or on request — ask to "make this spec modular" and this skill creates `docs/superpowers/specs/active/<topic>/` (`<topic>` = the existing filename with `-design.md` stripped), builds `00-index.md` from the title + Status + Open Questions + TOC + elevator, splits each `##` section into `NN-<slug>.md`, deletes the old file, and commits (Status unchanged; refuse a spec with no `##` sections).
 
