@@ -28,11 +28,7 @@ These principles override the rest of this skill when in conflict.
 
 ## Modular Specs
 
-The spec may be **modular** — a directory containing `00-index.md` plus one file per top-level section — instead of a single file. Detect it by whether the spec path is a directory holding `00-index.md`.
-
-- Read `00-index.md` first (it carries the title, `Status`, `## Open Questions`, a table of contents, and an elevator), then read **every section file**. Planning needs the whole design, so you read it all — just across small files instead of one large one.
-- `Status` and `## Open Questions` live only in `00-index.md`; do not expect them in the section files.
-- The plan you write stays **self-contained** as always (Core Principle #2) — the implementer works from the plan, so the spec's split layout is invisible to execution regardless. You do not need to record which section file a task came from.
+A spec may be modular — a directory with `00-index.md` + section files (see `brainstorming` → Modular Specs). Read `00-index.md` then every section file; planning needs the whole design. The plan stays self-contained, so the spec's layout is invisible to execution.
 
 ## Scope Check
 

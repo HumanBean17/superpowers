@@ -157,11 +157,4 @@ Same fit-check protocol as `spec-brainstorming`: if `docs/superpowers/spec-templ
 
 ## Modular Specs
 
-An existing spec may be **modular** — a directory (`00-index.md` + one file per top-level section) instead of a single file — when it has grown large. **Status and Open Questions live only in `00-index.md`.** Detect modular by whether the path is a directory containing `00-index.md`.
-
-**Access protocol:** read `00-index.md` first, then the section file(s) this update touches (for reconcile, every section — it compares the whole design); edit each in place. Never rewrite the whole spec to change one section. Adding, removing, or renaming a section file updates the index's TOC in the same change.
-
-- **Reconcile:** read the index, then compare every section file against what was built (reconcile needs the whole design), correcting each in place. Status and Open Questions live in the index — handle them there; Status is unchanged in reconcile, Open Questions may be resolved.
-- **Evolve:** fold the new scope in as target design. A genuinely **new section** becomes a new `NN-<slug>.md` file, added to the index's TOC; a change to existing scope edits that section file in place. Status, Open Questions, and TOC edits happen in the index.
-
-**Convert (on request):** if the user asks to make a single-file spec modular, this skill performs the same convert as `brainstorming` / `spec-brainstorming` — check the target is a single-file spec (not already modular, not `released`/archived), create `docs/superpowers/specs/active/<topic>/` (`<topic>` = the existing filename with `-design.md` stripped), build `00-index.md` from the title + `Status:` line + `## Open Questions` + a generated TOC + an elevator, split each `##` section (except Open Questions) into `NN-<slug>.md` in source order, delete the old single file, and commit (Status unchanged). It refuses a spec with no `##` structure and asks the user to restructure or stay single-file. Conversion is the only case this skill creates a spec's file layout; otherwise it edits whatever layout the spec already has.
+A spec may be modular — see the `brainstorming` skill's Modular Specs for the layout and access protocol. Read `00-index.md` then the section file(s) this update touches (every section for reconcile, only the touched ones for evolve); edit in place. A genuinely new section becomes a new `NN-<slug>.md` file with a TOC row in the index; Status is unchanged in reconcile. Convert on request.

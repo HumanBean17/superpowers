@@ -141,7 +141,6 @@ The approved design is the shared understanding — go straight to implementatio
 - Write the validated design (spec) to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md`.
   - `active/` holds specs for changes currently being implemented — they are the current source of truth. When the change is released (merged into its base branch), the spec and its plan move to `specs/archive/` and `plans/archive/`, becoming ADRs: a historical record of past decisions, no longer a description of current domain state. That move happens in `superpowers:finishing-a-development-branch`, not here.
   - (User preferences for spec location override this default).
-- If the spec is modular (template flag or requested convert — see [Modular Specs](#modular-specs)), write `00-index.md` plus one file per top-level section per the modular layout, not a single file. The `**Status:** draft` line goes under `00-index.md`'s title.
 - Start the spec with a `**Status:** draft` line directly under its `#` title — every spec carries a Status (see spec-brainstorming / spec-update for the four-state lifecycle).
 - If a project-level `docs/superpowers/spec-template.md` is present, conform by default and surface any mismatches before writing rather than silently extending the template — see Custom Spec Template for the fit-check protocol.
 - Use elements-of-style:writing-clearly-and-concisely skill if available.
@@ -187,51 +186,9 @@ Specs are freeform unless the project provides `docs/superpowers/spec-template.m
 
 ## Modular Specs
 
-A spec is normally a single file. A **large** spec — one that bloats any agent's context when fetched or edited — may instead be **modular**: a directory of small files an agent navigates by need instead of loading whole. A large spec is loaded in full whenever it is written, edited, or read for planning; modular specs keep each of those operations from pulling one giant file into context.
+A large spec may be **modular**: a directory `docs/superpowers/specs/active/<topic>/` holding `00-index.md` (title, `Status`, `## Open Questions`, a one-line-per-section TOC, and a short elevator) plus one file per top-level section (`NN-<slug>.md`). **`Status` and `## Open Questions` live only in `00-index.md`** — the index is the one file every operation reads first. Detect modular by whether the spec path is a directory containing `00-index.md`.
 
-### When a spec is modular
+**Access:** read `00-index.md` first, then only the section file(s) the operation needs; edit in place (the section file, or the index for Status / Open Questions / TOC). Read every section only when an operation needs the whole design (planning; reconcile in `spec-update`).
 
-A spec becomes modular in one of two ways — never auto-converted mid-edit:
-
-- **From creation** — the project's spec template carries the marker `<!-- superpowers: modular -->` (see Custom Spec Template above). The spec is born in the modular layout below.
-- **On request** — the user asks this skill to "make this spec modular," and it converts an existing single-file spec into the modular layout. See Convert, below.
-
-### The modular layout
-
-A modular spec is a directory named by the same date+topic slug a single-file spec would carry, containing:
-
-```
-docs/superpowers/specs/active/YYYY-MM-DD-<topic>/
-  00-index.md          # control surface — always loaded first
-  01-<slug>.md
-  02-<slug>.md
-  ...
-```
-
-- Each top-level `##` section of the design is its own file, numbered `NN-<slug>.md` for stable order (insert a section by renumbering so the order stays stable).
-- `00-index.md` is the entry point. It carries — and only carries — the title; the **`Status:`** line; the **`## Open Questions`** section; a **Table of Contents** (one row per section file: `filename → one-line summary`); and a short **elevator** (goal + 2–3 sentence architecture). No design detail lives in the index.
-- Section files carry the design content for their topic, at design altitude (no code), under the same rules as a single-file spec.
-
-**Status and Open Questions live only in `00-index.md`.** They are the lifecycle control surface, and the index is the one file every operation reads first — so no skill ever hunts across files for status or an unresolved question.
-
-### The spec-access protocol
-
-Every spec-touching skill branches once on whether the path is a directory containing `00-index.md` (modular) or a `.md` file (single), then:
-
-1. **Read the entry point first.** Single-file → read the whole file. Modular → read `00-index.md` only.
-2. **Load sections on demand.** From the index's TOC, read only the section file(s) the operation needs. Never read all sections unless the operation needs the whole design (planning does, and so does reconcile in `spec-update`).
-3. **Edit in place.** Single-file → edit the file. Modular → edit the specific section file, or the index for Status / Open Questions / TOC / elevator. Never rewrite the whole spec to change one section.
-4. **Keep the TOC honest.** Adding, removing, or renaming a section file updates the index's TOC in the same change.
-
-### Convert (single-file → modular, on request)
-
-When the user asks to modularize a single-file spec, this skill:
-
-1. Checks the target is a single-file spec, not already modular, not `released`/archived.
-2. Creates `docs/superpowers/specs/active/<topic>/` — `<topic>` is the existing filename with `-design.md` stripped (e.g. `2026-08-07-orders-redesign`), matching the modular layout's directory name.
-3. Builds `00-index.md` from the title, the `Status:` line, the `## Open Questions` section, a generated TOC, and an elevator (goal + opening lines).
-4. Splits each top-level `##` section (except Open Questions) into `NN-<slug>.md`, numbered in source order.
-5. Deletes the old single file and commits. Status is unchanged.
-
-A spec with no `##` structure (freeform) can't split cleanly — say so, and ask the user to restructure or stay single-file.
+**Becoming modular:** from creation if the spec template's first line is `<!-- superpowers: modular -->`, or on request — ask to "make this spec modular" and this skill creates `docs/superpowers/specs/active/<topic>/` (`<topic>` = the existing filename with `-design.md` stripped), builds `00-index.md` from the title + Status + Open Questions + TOC + elevator, splits each `##` section into `NN-<slug>.md`, deletes the old file, and commits (Status unchanged; refuse a spec with no `##` sections).
 

@@ -65,7 +65,7 @@ Create a task for each item and complete them in order. Items 3, 6, 7, 9, and 12
 6. **Propose 2–3 approaches** — with trade-offs and your recommendation; YAGNI ruthlessly — drop unnecessary features from every approach. In review mode, skip if the draft's approach is sound; otherwise propose alternatives to what the draft assumes.
 7. **Present/refine design** — in build mode present the design in sections scaled to complexity, getting approval after each. In review mode walk the draft top-down section by section (see Review mode). Get approval on changes.
 8. **Template fit check** — if a project-level `docs/superpowers/spec-template.md` exists, map the design onto it; surface every mismatch in one message and ask before deviating. Skip if absent. In review mode, re-check the draft against the template and surface any deviations the analyst introduced.
-9. **Write/update the spec** — in build mode, first ask the user whether to write a spec. If they decline (trivial change), go to the decline terminal (see Build mode). Otherwise: build creates a new file at `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` (today's date, topic derived from the feature slug); review updates the loaded draft **in place at its existing path** (do not rename or re-date it). If the spec is modular (the template's modular flag, or the user asked to convert — see [Modular Specs](#modular-specs)), write/update it as the modular layout (`00-index.md` + one file per section) following the spec-access protocol — edit the relevant section file in place, not the whole spec; Status and Open Questions live in `00-index.md`. Set `Status: draft` in both modes — promotion to `in_progress` happens later, after user approval. Maintain the Open Questions section. Commit.
+9. **Write/update the spec** — in build mode, first ask the user whether to write a spec. If they decline (trivial change), go to the decline terminal (see Build mode). Otherwise: build creates a new file at `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` (today's date, topic derived from the feature slug); review updates the loaded draft **in place at its existing path** (do not rename or re-date it). If modular, write/update per [Modular Specs](#modular-specs). Set `Status: draft` in both modes — promotion to `in_progress` happens later, after user approval. Maintain the Open Questions section. Commit.
 10. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope, code leakage, status correctness, and Open Questions integrity (see below).
 11. **User reviews the written spec** — ask the user to review the spec file.
 12. **Transition** — branches by mode (see Build mode / Review mode terminals below).
@@ -93,7 +93,7 @@ Posture: **review and refine an existing draft**, top-down (common → details).
 
 **Load the draft** (item 3): read it end to end; note its current `Status` and every Open Question.
 
-**Walk the draft section by section** (item 7), from the highest-level section (architecture, goals) down to the most detailed (contracts, data shapes, error handling). If the draft is modular, read `00-index.md` first (Status and Open Questions live there), then walk each section file in TOC order — one section file per step, not the whole spec at once. For each section:
+**Walk the draft section by section** (item 7), from the highest-level section (architecture, goals) down to the most detailed (contracts, data shapes, error handling). For each section:
 - Summarize what's there in a sentence or two, so the user knows what you read.
 - Flag gaps, ambiguity, internal contradictions, missing error/edge cases, and any implementation logic that leaked in (spec must carry design, not code).
 - Ask **one** clarifying question at a time about what you flagged. Prefer multiple choice.
@@ -220,7 +220,7 @@ Specs are freeform unless the project provides `docs/superpowers/spec-template.m
 
 **Format.** A markdown outline of sections, each a suggestion unless its heading is suffixed `[required]` (strip that tag from the output).
 
-**Modular.** If the template's first line is `<!-- superpowers: modular -->`, the spec is written as the modular layout (see [Modular Specs](#modular-specs) below) — `00-index.md` plus one file per `##` section — instead of a single file. `[required]` tags still apply, enforced across the section files. In review mode, re-check that the analyst wrote each `[required]` section as its file. The fit check is unchanged: map the design onto the template's sections.
+**Modular.** If the template's first line is `<!-- superpowers: modular -->`, the spec is modular (see [Modular Specs](#modular-specs)); `[required]` tags still apply across the section files, and review re-checks that each `[required]` section was written as its file.
 
 **Fit check.** Map the design onto the template. Drop non-required sections silently. For any `[required]` section that doesn't fit, any section the task needs but the template lacks, or any conflict — present all mismatches in one batched message and ask before deviating.
 
@@ -228,56 +228,5 @@ Specs are freeform unless the project provides `docs/superpowers/spec-template.m
 
 ## Modular Specs
 
-A spec is normally a single file. A **large** spec — one that bloats any agent's context when fetched or edited — may instead be **modular**: a directory of small files an agent navigates by need instead of loading whole. Both rounds of this skill read and rewrite the spec, so modular specs keep a large spec from swallowing the round's context.
-
-### When a spec is modular
-
-A spec becomes modular in one of two ways — never auto-converted mid-edit:
-
-- **From creation** — the project's spec template carries the marker `<!-- superpowers: modular -->` (see Custom Spec Template above). Build mode creates the modular layout.
-- **On request** — the user asks this skill to "make this spec modular," and it converts an existing single-file spec into the modular layout. See Convert, below.
-
-### The modular layout
-
-A modular spec is a directory named by the same date+topic slug a single-file spec would carry, containing:
-
-```
-docs/superpowers/specs/active/YYYY-MM-DD-<topic>/
-  00-index.md          # control surface — always loaded first
-  01-<slug>.md
-  02-<slug>.md
-  ...
-```
-
-- Each top-level `##` section of the design is its own file, numbered `NN-<slug>.md` for stable order (insert a section by renumbering so the order stays stable).
-- `00-index.md` is the entry point. It carries — and only carries — the title; the **`Status:`** line; the **`## Open Questions`** section; a **Table of Contents** (one row per section file: `filename → one-line summary`); and a short **elevator** (goal + 2–3 sentence architecture). No design detail lives in the index.
-- Section files carry the design content for their topic, at design altitude (no code), under the same rules as a single-file spec.
-
-**Status and Open Questions live only in `00-index.md`.** They are the lifecycle control surface, and the index is the one file every operation reads first — so no round ever hunts across files for status or an unresolved question.
-
-### The spec-access protocol
-
-Every spec-touching skill branches once on whether the path is a directory containing `00-index.md` (modular) or a `.md` file (single), then:
-
-1. **Read the entry point first.** Single-file → read the whole file. Modular → read `00-index.md` only.
-2. **Load sections on demand.** From the index's TOC, read only the section file(s) the operation needs. Never read all sections unless the operation needs the whole design (planning does, and so does reconcile in `spec-update`).
-3. **Edit in place.** Single-file → edit the file. Modular → edit the specific section file, or the index for Status / Open Questions / TOC / elevator. Never rewrite the whole spec to change one section.
-4. **Keep the TOC honest.** Adding, removing, or renaming a section file updates the index's TOC in the same change.
-
-### In this skill (build vs review)
-
-- **Build mode:** if the template is modular, create `00-index.md` + one file per `##` section. Iterate on a section by editing its file, not the whole spec.
-- **Review mode:** read `00-index.md` first, then walk each section file top-down (one file per step). Resolve Open Questions and set Status in the index. Approval flips `00-index.md`'s `Status:` line to `in_progress`, which `writing-plans` then reads.
-
-### Convert (single-file → modular, on request)
-
-When the user asks to modularize a single-file spec, this skill:
-
-1. Checks the target is a single-file spec, not already modular, not `released`/archived.
-2. Creates `docs/superpowers/specs/active/<topic>/` — `<topic>` is the existing filename with `-design.md` stripped (e.g. `2026-08-07-orders-redesign`), matching the modular layout's directory name.
-3. Builds `00-index.md` from the title, the `Status:` line, the `## Open Questions` section, a generated TOC, and an elevator (goal + opening lines).
-4. Splits each top-level `##` section (except Open Questions) into `NN-<slug>.md`, numbered in source order.
-5. Deletes the old single file and commits. Status is unchanged.
-
-A spec with no `##` structure (freeform) can't split cleanly — say so, and ask the user to restructure or stay single-file.
+A spec may be **modular** — a directory with `00-index.md` + section files; see the `brainstorming` skill's Modular Specs for the layout, access protocol, and convert action. In this skill: **build** creates the layout when the template is modular; **review** reads `00-index.md` then each section file in TOC order (one file per step); either round converts a single-file spec on request.
 
