@@ -34,6 +34,12 @@ Support for **project-level custom spec templates** has been added. If you creat
 
 **Rationale:** Projects often have specific documentation standards. This allows teams to enforce consistent spec structure without modifying the core skill.
 
+### Modular Specs (Split a Large Spec Into an Index + Section Files)
+
+A spec may now be a **directory** — `00-index.md` (title, `Status`, `## Open Questions`, a table of contents, and an elevator) plus one file per top-level section (`01-architecture.md`, `02-data-model.md`, …) — instead of a single monolithic `…-design.md` file. A spec becomes modular either **from creation**, when its template carries a `<!-- superpowers: modular -->` flag, or **on explicit request**, when an authoring skill (`brainstorming` / `spec-brainstorming` / `spec-update`) converts a single-file spec into the directory form (atomic, committed, `Status` unchanged). The authoring skills and `writing-plans` follow one **access protocol**: read `00-index.md` first, then load only the section file(s) the operation needs, and edit that file in place — so writing, reviewing, and updating a large spec no longer read or rewrite the whole file. `writing-plans` still reads the whole design (index + every section), but as separate small reads; once the plan exists the spec is not reloaded, since plans are already self-contained. `finishing-a-development-branch` archives a directory when the spec is modular, and sets `Status` in `00-index.md`. Single-file specs are unchanged when no template opts in.
+
+**Rationale:** Teams using rich custom templates produced specs so large that any agent fetching or editing them blew its context. Splitting the spec at the project's own section seams — with an always-small index as the entry point — lets authoring and planning touch only the part they need, while keeping `Status` and `Open Questions` centralized in the index so the lifecycle machinery stays in one place.
+
 ### Visual Companion Removed
 
 The browser-based **visual companion feature** (mockups, diagrams, visual options) has been removed from the brainstorming skill.

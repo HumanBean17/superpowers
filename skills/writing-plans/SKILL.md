@@ -26,6 +26,14 @@ These principles override the rest of this skill when in conflict.
 - `active/` holds plans for changes currently being implemented — current source of truth. On release (merge into the base branch), the plan moves to `plans/archive/` alongside its spec and becomes an ADR (past decision, not current domain state). The move is handled by `superpowers:finishing-a-development-branch`.
 - (User preferences for plan location override this default)
 
+## Modular Specs
+
+The spec may be **modular** — a directory containing `00-index.md` plus one file per top-level section — instead of a single file. Detect it by whether the spec path is a directory holding `00-index.md`.
+
+- Read `00-index.md` first (it carries the title, `Status`, `## Open Questions`, a table of contents, and an elevator), then read **every section file**. Planning needs the whole design, so you read it all — just across small files instead of one large one.
+- `Status` and `## Open Questions` live only in `00-index.md`; do not expect them in the section files.
+- The plan you write stays **self-contained** as always (Core Principle #2). The implementer and task-reviewer work from the plan, never the spec — so the spec's split layout is invisible to execution. You do not need to record which section file a task came from.
+
 ## Scope Check
 
 If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
