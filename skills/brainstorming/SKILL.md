@@ -39,10 +39,10 @@ You MUST create a task for each of these items and complete them in order:
    - **No spec** → mark all brainstorming tasks complete, then proceed to implementation (no spec doc, no plan).
    - **Yes spec** → continue to steps 7-11.
 7. **Template fit check** — if a project-level `docs/superpowers/spec-template.md` exists, map the approved design onto it; surface every mismatch in one message and ask before deviating. Skip if absent. See Custom Spec Template.
-8. **Write design doc** — save to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` and commit. If the spec is modular (the template's modular flag, or the user asked to convert — see [Modular Specs](#modular-specs)), write it as the modular layout (`00-index.md` + one file per section) instead of a single file
+8. **Write design doc** — save to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` and commit. If the spec is modular (the template's modular flag, or the user asked to convert — see [Modular Specs](#modular-specs)), write it as the modular layout (`00-index.md` + one file per section) instead of a single file.
 9. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 10. **User reviews written spec** — ask user to review the spec file before proceeding
-11. **Transition to implementation** — set the spec `Status: in_progress` and commit, then invoke writing-plans to create the plan
+11. **Transition to implementation** — set the spec `Status: in_progress` (in `00-index.md` if the spec is modular) and commit, then invoke writing-plans to create the plan
 
 ## Process Flow
 
@@ -187,7 +187,7 @@ Specs are freeform unless the project provides `docs/superpowers/spec-template.m
 
 ## Modular Specs
 
-A spec is normally a single file. A **large** spec — one that bloats any agent's context when fetched or edited — may instead be **modular**: a directory of small files an agent navigates by need instead of loading whole. The spec is loaded in full at only two stages — here (writing/editing) and in `writing-plans` (reading); modular specs keep both from pulling one giant file into context.
+A spec is normally a single file. A **large** spec — one that bloats any agent's context when fetched or edited — may instead be **modular**: a directory of small files an agent navigates by need instead of loading whole. A large spec is loaded in full whenever it is written, edited, or read for planning; modular specs keep each of those operations from pulling one giant file into context.
 
 ### When a spec is modular
 
@@ -203,12 +203,12 @@ A modular spec is a directory named by the same date+topic slug a single-file sp
 ```
 docs/superpowers/specs/active/YYYY-MM-DD-<topic>/
   00-index.md          # control surface — always loaded first
-  01-<section>.md
-  02-<section>.md
+  01-<slug>.md
+  02-<slug>.md
   ...
 ```
 
-- Each top-level `##` section of the design is its own file, numbered `NN-<slug>.md` for stable order.
+- Each top-level `##` section of the design is its own file, numbered `NN-<slug>.md` for stable order (insert a section by renumbering so the order stays stable).
 - `00-index.md` is the entry point. It carries — and only carries — the title; the **`Status:`** line; the **`## Open Questions`** section; a **Table of Contents** (one row per section file: `filename → one-line summary`); and a short **elevator** (goal + 2–3 sentence architecture). No design detail lives in the index.
 - Section files carry the design content for their topic, at design altitude (no code), under the same rules as a single-file spec.
 
@@ -219,7 +219,7 @@ docs/superpowers/specs/active/YYYY-MM-DD-<topic>/
 Every spec-touching skill branches once on whether the path is a directory containing `00-index.md` (modular) or a `.md` file (single), then:
 
 1. **Read the entry point first.** Single-file → read the whole file. Modular → read `00-index.md` only.
-2. **Load sections on demand.** From the index's TOC, read only the section file(s) the operation needs. Never read all sections unless the operation needs the whole design (`writing-plans` does).
+2. **Load sections on demand.** From the index's TOC, read only the section file(s) the operation needs. Never read all sections unless the operation needs the whole design (planning does, and so does reconcile in `spec-update`).
 3. **Edit in place.** Single-file → edit the file. Modular → edit the specific section file, or the index for Status / Open Questions / TOC / elevator. Never rewrite the whole spec to change one section.
 4. **Keep the TOC honest.** Adding, removing, or renaming a section file updates the index's TOC in the same change.
 
@@ -228,7 +228,7 @@ Every spec-touching skill branches once on whether the path is a directory conta
 When the user asks to modularize a single-file spec, this skill:
 
 1. Checks the target is a single-file spec, not already modular, not `released`/archived.
-2. Creates `specs/active/<slug>/` (`<slug>` = the existing filename stem).
+2. Creates `docs/superpowers/specs/active/<topic>/` — `<topic>` is the existing filename with `-design.md` stripped (e.g. `2026-08-07-orders-redesign`), matching the modular layout's directory name.
 3. Builds `00-index.md` from the title, the `Status:` line, the `## Open Questions` section, a generated TOC, and an elevator (goal + opening lines).
 4. Splits each top-level `##` section (except Open Questions) into `NN-<slug>.md`, numbered in source order.
 5. Deletes the old single file and commits. Status is unchanged.

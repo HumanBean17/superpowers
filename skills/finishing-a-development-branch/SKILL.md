@@ -122,11 +122,11 @@ git branch -d <feature-branch>
 mkdir -p docs/superpowers/specs/archive docs/superpowers/plans/archive
 # The spec(s) and plan(s) this branch implemented.
 # Set each spec's Status to 'released' (terminal) first — use your edit tool, not a shell command:
-#   single-file spec → edit the Status line in <spec>.md;  modular spec → edit it in 00-index.md.
+#   single-file spec → edit the Status line in its .md file;  modular spec → edit it in 00-index.md.
 # Guard each move on existence: a spec-only change (e.g. define-and-execute) may have no plan — skip the plan move if absent.
 # If more than one is active, ask your human partner which to archive before moving.
-# <spec> resolves to a file (single-file) OR a directory (modular) — git mv handles either.
-git mv docs/superpowers/specs/active/<spec> docs/superpowers/specs/archive/
+# <spec-name> is the spec's entry under active/ — either <topic>-design.md (single file) or <topic>/ (modular directory); git mv moves either.
+git mv docs/superpowers/specs/active/<spec-name> docs/superpowers/specs/archive/
 git mv docs/superpowers/plans/active/<plan>.md docs/superpowers/plans/archive/
 git commit -m "docs: archive spec/plan for <feature> (released → ADR)"
 ```

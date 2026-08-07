@@ -32,7 +32,7 @@ The spec may be **modular** — a directory containing `00-index.md` plus one fi
 
 - Read `00-index.md` first (it carries the title, `Status`, `## Open Questions`, a table of contents, and an elevator), then read **every section file**. Planning needs the whole design, so you read it all — just across small files instead of one large one.
 - `Status` and `## Open Questions` live only in `00-index.md`; do not expect them in the section files.
-- The plan you write stays **self-contained** as always (Core Principle #2). The implementer and task-reviewer work from the plan, never the spec — so the spec's split layout is invisible to execution. You do not need to record which section file a task came from.
+- The plan you write stays **self-contained** as always (Core Principle #2) — the implementer works from the plan, so the spec's split layout is invisible to execution regardless. You do not need to record which section file a task came from.
 
 ## Scope Check
 
