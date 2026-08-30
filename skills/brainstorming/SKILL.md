@@ -38,7 +38,7 @@ You MUST create a task for each of these items and complete them in order:
 6. **Ask whether to write a spec** — once the design is approved, mark all previous tasks (1-5) as completed, then ask the user. The design conversation is mandatory; the spec document is not. For trivial changes the approved design alone may be enough; for anything non-trivial, default to writing one.
    - **No spec** → mark all brainstorming tasks complete, then proceed to implementation (no spec doc, no plan).
    - **Yes spec** → continue to steps 7-11.
-7. **Template fit check** — if a project-level `docs/superpowers/spec-template.md` exists, map the approved design onto it; surface every mismatch in one message and ask before deviating. Skip if absent. See Custom Spec Template.
+7. **Template fit check** — if a project-level `docs/superpowers/spec-template.md` exists, map the approved design onto it; surface every mismatch in one message, resolved as a deviation or a template-flag proposal. Skip if absent. See Custom Spec Template.
 8. **Write design doc** — save to `docs/superpowers/specs/active/YYYY-MM-DD-<topic>-design.md` and commit. If the spec is modular (the template's modular flag, or the user asked to convert — see [Modular Specs](#modular-specs)), write it as the modular layout (`00-index.md` + one file per section) instead of a single file.
 9. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 10. **User reviews written spec** — ask user to review the spec file before proceeding
@@ -150,7 +150,7 @@ The approved design is the shared understanding — go straight to implementatio
 **Spec Self-Review:**
 After writing the spec, look at it with fresh eyes:
 
-1. **Template conformance (if `docs/superpowers/spec-template.md` is present):** Does it follow the template? Are required sections present, optional ones either dropped or filled?
+1. **Template conformance (if `docs/superpowers/spec-template.md` is present):** Does it follow the template? Are required sections present, optional ones either dropped or filled? A structural mismatch here raises the template flag instead of force-fitting the spec.
 2. **Code leakage:** Did implementation logic (method bodies, algorithms) sneak in? Remove it - keep only design, contracts and references. 
 3. **Altitude check:** Per-task detail a human would skim rather than review (what one task needs, not the design itself) belongs in the plan — but anything the spec template reserves a section for stays, at design altitude. Then confirm the spec still names the components, contracts, and key decisions a plan agent needs to expand it into tasks — abstract, not vague.
 4. **Placeholder scan:** Any "TBD", "TODO", incomplete sections, or vague requirements? Fix them.
@@ -176,13 +176,18 @@ Wait for the user's response. If they request changes, make them and re-run the 
 
 ## Custom Spec Template
 
-Specs are freeform unless the project provides `docs/superpowers/spec-template.md` — a project-level file read at spec-writing time and never written to. It shapes only the written spec, never the brainstorming conversation.
+Specs are freeform unless the project provides `docs/superpowers/spec-template.md` — a project-level file read at spec-writing time and written only through a template-improvement proposal the user approves in the fit check. It shapes only the written spec, never the brainstorming conversation.
 
 **Format.** A markdown outline of sections, each a suggestion unless its heading is suffixed `[required]` (strip that tag from the output).
 
 **Modular.** If the template's first line is `<!-- superpowers: modular -->`, the spec is written as the modular layout (see [Modular Specs](#modular-specs) below) — `00-index.md` plus one file per `##` section — instead of a single file. `[required]` tags still apply, enforced across the section files. The fit check is unchanged: map the design onto the template's sections.
 
-**Fit check.** Map the approved design onto the template. Drop non-required sections silently. For any `[required]` section that doesn't fit, any section the task needs but the template lacks, or any conflict — present all mismatches in one batched message and ask before deviating.
+**Fit check.** Map the approved design onto the template. Drop non-required sections silently. Surface every mismatch — a `[required]` section that doesn't fit, a section the task needs but the template lacks, any conflict — in one batched message, each classified:
+
+- **Incidental** — a quirk of this one design. Propose a deviation for this spec.
+- **Structural** — it would recur for this class of tasks, or the template demands what a core principle forbids (implementation code, per-task detail below spec altitude). Raise the **template flag**: propose the concrete template edit — add, rename, drop, or re-`[required]` a section.
+
+Ask before applying any resolution; the user can reclassify any item. An approved template edit lands in the same session: update `spec-template.md`, commit it, and write the spec conformant to the updated template. A declined edit falls back to a deviation for this spec.
 
 ## Modular Specs
 
