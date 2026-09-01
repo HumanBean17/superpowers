@@ -77,6 +77,7 @@ tests=(
     "test-sdd-workspace.sh"
     "test-subagent-driven-development.sh"
     "test-spec-template-opt-in.sh"
+    "test-spec-update-draft.sh"
 )
 
 # Integration tests (slow, full execution)

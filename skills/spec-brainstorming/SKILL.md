@@ -8,7 +8,7 @@ description: "Two-round spec lifecycle for teams with a system analyst and a dev
 Turn ideas into plan-ready specs through a two-round lifecycle tailored for a team with a **system analyst** and a **developer**. The same design thinking drives both rounds — they differ only in entry state, terminal action, and the status they write.
 
 <OPT-IN>
-This skill is **opt-in**. Invoke it only when the user explicitly requests a spec build or spec review round — e.g., they name this skill, ask to "build a spec", "review the draft spec", or reference the analyst/developer rounds. Do NOT self-invoke for general "let's build X" requests, new features, or open-ended creative work. Route those to the regular `brainstorming` skill instead. If you were loaded on a marginal match and the request is general creative work, say so and use `brainstorming`.
+This skill is **opt-in**. Invoke it only when the user explicitly requests a spec build or spec review round — e.g., they name this skill, ask to "build a spec", "review the draft spec", or reference the analyst/developer rounds. Do NOT self-invoke for general "let's build X" requests, new features, or open-ended creative work. Route those to the regular `brainstorming` skill instead. A targeted edit to an existing draft — a quick fix or an added section, no round ceremony — routes to `superpowers:spec-update`. If you were loaded on a marginal match and the request is general creative work, say so and use `brainstorming`.
 </OPT-IN>
 
 <HARD-GATE>
@@ -36,7 +36,7 @@ A spec moves through two rounds and carries a status:
   - **`draft`** — still has open questions, or the reviewer is not ready to approve. Stop here. Or
   - **approved → `in_progress`** — every Open Question is resolved or explicitly accepted; invoke `writing-plans`.
 
-The `Status` field has four values — **`draft`**, **`in_progress`**, **`implemented`**, **`released`** — but this skill only writes the first two. `draft → in_progress` is the approval event in review mode (not a separate stored state). Once a spec is `in_progress` the rest of the lifecycle is owned elsewhere: `superpowers:finishing-a-development-branch` sets `implemented` (tests green) and `released` (merge → archive), and `superpowers:spec-update` reconciles or evolves an `in_progress`/`implemented` spec. See `superpowers:spec-update` for the full state machine.
+The `Status` field has four values — **`draft`**, **`in_progress`**, **`implemented`**, **`released`** — but this skill only writes the first two. `draft → in_progress` is the approval event in review mode (not a separate stored state). Once a spec is `in_progress` the rest of the lifecycle is owned elsewhere: `superpowers:finishing-a-development-branch` sets `implemented` (tests green) and `released` (merge → archive), and `superpowers:spec-update` reconciles or evolves an `in_progress`/`implemented` spec — it also takes targeted no-ceremony edits to a `draft` and may promote it on request (same Open Questions gate; no `writing-plans` invocation). See `superpowers:spec-update` for the full state machine.
 
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
 
@@ -153,7 +153,7 @@ This skill writes only `draft` and `in_progress`:
 - Build mode always writes/leaves `draft`.
 - Review mode leaves `draft`, or flips to `in_progress` at the terminal on approval (gated on Open Questions).
 
-The later statuses are written by other skills — `implemented` (plan executed, tests green) and `released` (merged → archived as ADR) by `superpowers:finishing-a-development-branch`; updates to an `in_progress`/`implemented` spec by `superpowers:spec-update`. This skill never sets them.
+The later statuses are written by other skills — `implemented` (plan executed, tests green) and `released` (merged → archived as ADR) by `superpowers:finishing-a-development-branch`; updates to a `draft` (targeted edits), `in_progress`, or `implemented` spec by `superpowers:spec-update`. This skill never sets them.
 
 ## Spec Self-Review
 
