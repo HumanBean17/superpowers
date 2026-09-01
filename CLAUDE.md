@@ -4,4 +4,4 @@ This repo is a fork of [obra/superpowers](https://github.com/obra/superpowers), 
 
 ## Rule: mirror skill changes in README.md
 
-Any change to an original skill's behavior must be logged in `README.md` under **"Changes from Original Superpowers"** — one section per change, describing what changed plus a one-line rationale. This is a hard requirement before committing skill modifications.
+Any change to an original skill's behavior must be logged in `README.md` under **"Changes from Original Superpowers"** — one section per change, describing what changed plus a one-line rationale. This is a hard requirement before committing skill modifications. Do not treat `README.md` as a decision log for current repo, it should represent a state as-is.
