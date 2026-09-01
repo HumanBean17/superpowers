@@ -95,17 +95,13 @@ Posture: **grow the change's scope, then plan and implement it in-flow — no `w
 
 ## Draft Mode
 
-A **draft** update runs the same checklist with both intents draft-mapped. The session is **body-only**: rewrite the body, commit, stop — no plan mode, no code, no `writing-plans`. A draft is an unapproved design; nothing is ever built from it in this skill.
+Both intents, draft-mapped; the session is **body-only** (HARD-GATE) — no plan mode, no code, no `writing-plans`. **Status stays `draft`.**
 
-- **Reconcile-on-draft** — nothing was built from a draft, so reconcile compares the body against the **codebase it describes**, not a diff or plan: fix stale assumptions (related code shipped since the draft was written), altitude drift, and internal consistency. If nothing drifted, say so and limit the pass to altitude/consistency fixes.
-- **Evolve-on-draft** — fold the new scope into the body as present-tense target design, next to the existing scope; **Status stays `draft`**. Questions the new scope opens go to Open Questions — read-write under the same rules as both `spec-brainstorming` rounds (append-only, never delete; resolve inline and reflect it in the body; may add new ones).
-- If the draft lacks a `Status` line or an `## Open Questions` section (e.g. it came from the regular `brainstorming` skill), treat it as `Status: draft` with an empty Open Questions section and add both before proceeding.
-- A full build/review round — approaches, top-down walk, approval ceremony — is `spec-brainstorming`'s, not this skill's.
+- **Reconcile-on-draft** — compare the body against the **codebase it describes**, not a diff or plan (nothing was built from it): fix stale assumptions, altitude drift, inconsistency. If nothing drifted, say so.
+- **Evolve-on-draft** — fold the new scope in as present-tense target design, next to the existing scope. New questions go to Open Questions — read-write under the same rules as both `spec-brainstorming` rounds.
+- Draft missing a `Status` line or an `## Open Questions` section (e.g. from the regular `brainstorming` skill)? Add both (`Status: draft`, empty section) before proceeding.
 
-**Terminal (item 9 for drafts).** After the user approves the updated spec, check the promotion gate — the Open Questions section exists and every item is `- [x]`:
-
-- **Gate satisfied** → offer promotion: *"All Open Questions are resolved — promote this spec to `in_progress`?"* On **yes**: edit the `Status` line to `in_progress`, commit, stop, and tell the user `writing-plans` is next when they're ready — do NOT invoke it. On **no**: leave `Status: draft` and stop.
-- **Gate unsatisfied** → list the remaining open questions as blockers and stop at `Status: draft`.
+**Terminal.** After the user approves the update, check the gate — the Open Questions section exists and every item is `- [x]`. **Satisfied** → offer: *"All Open Questions are resolved — promote this spec to `in_progress`?"* On yes: set `in_progress`, commit, stop, point at `writing-plans` — do NOT invoke it. **Unsatisfied** → list the remaining open questions as blockers and stop at `Status: draft`.
 
 ## Spec Self-Review
 
