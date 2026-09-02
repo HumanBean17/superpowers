@@ -131,6 +131,8 @@ git mv docs/superpowers/plans/active/<plan>.md docs/superpowers/plans/archive/
 git commit -m "docs: archive spec/plan for <feature> (released → ADR)"
 ```
 
+Domain reference files under `docs/superpowers/domain/` are current domain state, not decision records — never archive them with a released spec. Specs link to them; the next spec touching the same domain reuses them.
+
 If no spec/plan exists under `active/` (e.g., this branch had none), skip this step silently.
 
 ### Option 2: Push and Create PR
